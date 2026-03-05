@@ -1,6 +1,9 @@
 # SWE-_FinalProject_UTRGV_SP26
 Participants: Diego Zuniga, Rafael Anulao, Javier Luna
 
+Sprint Planning Doc:
+https://docs.google.com/document/d/11cvR89MEoy7IdX50nD7hZbELlPDvHin3c0k5D78KeQ0/edit?tab=t.0 
+
 Current Ideas:
 1. Parking lot availability app
     - Shows a map of the different parking lots in campus
