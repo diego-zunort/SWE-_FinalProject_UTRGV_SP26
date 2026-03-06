@@ -5,6 +5,7 @@ Sprint Planning Doc:
 https://docs.google.com/document/d/11cvR89MEoy7IdX50nD7hZbELlPDvHin3c0k5D78KeQ0/edit?tab=t.0 
 
 UTRGV Club/Activity pairing app
+
 This project is a web application that connects UTRGV students with campus organizations and events through
 a matching system. The platform will allow students to create profiles containing their academic major, hobbies, 
 and personal interests. Using this information, the application will recommend clubs, organizations, and upcoming
@@ -13,12 +14,14 @@ Inspired by swipe-based interfaces commonly found in dating apps such as Tinder,
 with suggested opportunities by liking, skipping, or bookmarking them. By simplifying the discovery process, we hope the
 platform can help encourage student engagement with campus activities and organizations.
 
-Goal:Connecting student's to clubs, organizations, and campus events that align with their
+Goal:
+     Connecting student's to clubs, organizations, and campus events that align with their
      interests, hobbies, major, etc with a simple swipe-based interface.
 
 Features:
-    - Prompts users to share their hobbies, favourite activities, interests, etc
-    - Using the information given, the app shows the user different clubs, campus activities and events that match their             preferences
-    - Gives the user all available information about the matches
-    - Chat feature with clubs user has joined
-    - Provides a reward system if the user engages in matched activities.
+
+     - Prompts users to share their hobbies, favourite activities, interests, etc
+     - Using the information given, the app shows the user different clubs, campus activities and events that match their             preferences
+     - Gives the user all available information about the matches
+     - Chat feature with clubs user has joined
+     - Provides a reward system if the user engages in matched activities.
