@@ -4,6 +4,9 @@ Participants: Diego Zuniga, Rafael Anulao, Javier Luna
 Sprint Planning Doc:
 https://docs.google.com/document/d/11cvR89MEoy7IdX50nD7hZbELlPDvHin3c0k5D78KeQ0/edit?tab=t.0 
 
+User Stories:
+https://docs.google.com/document/d/1Js7Q0UrVCtyuyQ1W3jRPKq3VF1qJJLV_q6je47ajRTI/edit?usp=sharing
+
 UTRGV Club/Activity pairing app
 
 This project is a web application that connects UTRGV students with campus organizations and events through
