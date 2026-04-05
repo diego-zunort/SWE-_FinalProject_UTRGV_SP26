@@ -20,4 +20,5 @@ from finalApp import views
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('club_match/', views.club_match, name='club_match')
 ]
