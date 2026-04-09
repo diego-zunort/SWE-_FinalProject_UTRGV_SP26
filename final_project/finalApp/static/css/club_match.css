@@ -42,7 +42,7 @@ body {
   .L-main {
     flex: 1;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
   }
  
@@ -53,6 +53,9 @@ body {
     max-width: 720px;
     padding: 20px;
     color: white;
+
+    display: flex;
+    flex-direction: column;
 
   }
   .club-cover {
@@ -73,6 +76,8 @@ body {
     display: flex;
     justify-content: center;
     gap: 35px;
+    margin-top: auto;
+    margin-bottom: 40px;
 }
 
   .action-btn {
@@ -85,5 +90,34 @@ body {
     font-size: 24px;
     cursor: pointer;
   }
+
+    .R-main {
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  .R-main .club-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+  .info-row {
+    flex:1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+
+.info-img {
+    width: 90px;
+    height: 70px;
+    border: 2px solid rgba(255,255,255,0.6);
+    border-radius: 10px;
+    flex-shrink: 0;
+}
 
  
