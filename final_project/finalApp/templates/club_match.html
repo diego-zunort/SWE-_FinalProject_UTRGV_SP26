@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venture</title>
+    <link rel="stylesheet" href="{% static "css\club_match.css" %}">
+</head>
+<body>
+    
+    <div class="container">
+        <!-- Side Nav Bar -->
+        <!-- need to add functionality to buttons also make layout cleaner -->
+        <div class="sidebar">
+            <div class="profile"></div>
+            <div class="nav-item">Home</div>
+            <div class="nav-item">Explore</div>
+            <div class="nav-item">Clubs</div>
+            <div class="nav-item">Events</div>
+            <div class="nav-item">Profile</div>
+        </div>
+
+        <!-- Club Card -->
+        <!-- This holds Club Name, Quick Photos, and Yes, No, Maybe Buttons -->
+        <div class="L-main">
+            <div class="club-card">
+                <div class="club-cover"></div>
+                <h2>Club Name</h2>
+                <div class="card-actions">
+                    <button class="action-btn">X</button>
+                    <button class="action-btn">?</button>
+                    <button class="action-btn">Y</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Club Description Card -->
+        <!-- Gives Club Description, Amenities, Requirements -->
+        <div class="R-main">
+            <div class="club-card">
+                <h2>Club Info</h2>
+                <div class="info-row">
+                    <span>Club Description</span>
+                    <div class="info-img"></div>
+                </div>
+                <div class="info-row">
+                    <span>Club Amenities</span>
+                    <div class="info-img"></div>
+                </div>
+                <div class="info-row">
+                    <span>Club Requirements</span>
+                    <div class="info-img"></div>
+                </div>
+                
+            </div>
+        </div>
+
+      
+    </div>
+
+
+    <script src="{% static "js\club_match.js" %}"></script>
+</body>
+</html>
