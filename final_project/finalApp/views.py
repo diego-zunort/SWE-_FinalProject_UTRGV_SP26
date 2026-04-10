@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 
 from .models import Profile
 
+@login_required
 def home(request):
     return render(request, 'home.html', {})
 
