@@ -1,0 +1,8 @@
+<h2>Profile</h2>
+
+<p><strong>Username:</strong> {{ request.user.username }}</p>
+<p><strong>Bio:</strong> {{ profile.bio|default:"No bio yet." }}</p>
+<p><strong>Student ID:</strong> {{ profile.student_id|default:"Not set" }}</p>
+<p><strong>Enrolled:</strong> {{ profile.enrolled|yesno:"Yes,No" }}</p>
+
+<a href="{% url 'home' %}">Back to home</a>
