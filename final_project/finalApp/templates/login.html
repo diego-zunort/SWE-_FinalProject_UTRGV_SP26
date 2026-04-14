@@ -1,9 +1,179 @@
-<h2>Login</h2>
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <style>
+      :root {
+        --brand-orange: #f05023;
+        --brand-gray: #646469;
+        --brand-white: #ffffff;
+      }
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Login</button>
-</form>
+      * {
+        box-sizing: border-box;
+      }
 
-<a href="{% url 'register' %}">Or create account</a>
+      body {
+        position: relative;
+        overflow: hidden;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        color: var(--brand-gray);
+        background:
+          linear-gradient(
+            135deg,
+            rgba(100, 100, 105, 0.7) 0%,
+            rgba(240, 80, 35, 0.55) 100%
+          ),
+          url("{% static 'images/utrgv-ed.jpg' %}") center center / cover
+            no-repeat;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          145deg,
+          rgba(100, 100, 105, 0.6) 15%,
+          rgba(240, 80, 35, 0.28) 50%,
+          rgba(100, 100, 105, 0.72) 100%
+        );
+        backdrop-filter: saturate(0.9);
+      }
+
+      .page-shell {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .login-card {
+        width: min(100%, 420px);
+        background: rgba(255, 255, 255, 0.94);
+        border: 3px solid var(--brand-orange);
+        border-radius: 18px;
+        padding: 36px 32px;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(6px);
+      }
+
+      .login-card h2 {
+        margin: 0 0 10px;
+        text-align: center;
+        color: var(--brand-orange);
+        font-size: 2rem;
+      }
+
+      .login-card p {
+        margin: 0 0 24px;
+        text-align: center;
+        color: var(--brand-gray);
+      }
+
+      form p {
+        margin: 0 0 18px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--brand-gray);
+        font-weight: 600;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid var(--brand-gray);
+        border-radius: 10px;
+        font-size: 1rem;
+        color: var(--brand-gray);
+        background: var(--brand-white);
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--brand-orange);
+        box-shadow: 0 0 0 3px rgba(240, 80, 35, 0.15);
+      }
+
+      .errorlist {
+        margin: 0 0 10px;
+        padding: 10px 14px;
+        list-style: none;
+        border-radius: 10px;
+        background: rgba(240, 80, 35, 0.12);
+        color: var(--brand-orange);
+        font-size: 0.95rem;
+      }
+
+      button {
+        width: 100%;
+        border: none;
+        border-radius: 10px;
+        padding: 13px 18px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        background: var(--brand-orange);
+        color: var(--brand-white);
+        transition:
+          background 0.2s ease,
+          transform 0.2s ease;
+      }
+
+      button:hover {
+        background: #cf441d;
+        transform: translateY(-1px);
+      }
+
+      .login-link {
+        margin-top: 18px;
+        text-align: center;
+      }
+
+      .login-link a {
+        color: var(--brand-orange);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .login-link a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <div class="login-card">
+        <h2>Login</h2>
+        <p>Sign in to continue to your account.</p>
+
+        <form method="post">
+          {% csrf_token %} {{ form.as_p }}
+          <button type="submit">Login</button>
+        </form>
+
+        <div class="login-link">
+          <a href="{% url 'register' %}">Or create account</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

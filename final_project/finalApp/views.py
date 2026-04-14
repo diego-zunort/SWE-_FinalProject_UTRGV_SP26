@@ -5,6 +5,15 @@ from django.shortcuts import redirect, render
 
 from .models import Profile
 
+
+def build_register_form(data=None):
+    form = UserCreationForm(data)
+    form.fields["username"].help_text = "Use letters, numbers, and @ . + - _ only."
+    form.fields["password1"].help_text = "Use 8+ characters and avoid something too common."
+    form.fields["password2"].help_text = "Enter the same password again."
+    return form
+
+
 @login_required
 def home(request):
     return render(request, 'home.html', {})
@@ -15,13 +24,13 @@ def club_match(request):
 
 def register(request):
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = build_register_form(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, "Account created successfully")
             return redirect("login")
     else:
-        form = UserCreationForm()
+        form = build_register_form()
 
     return render(request, "register.html", {"form": form})
 
