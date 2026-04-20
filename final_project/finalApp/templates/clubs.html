@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Venture</title>
-    <link rel="stylesheet" href="{% static "css\home.css" %}">
+    <link rel="stylesheet" href="{% static "css\clubs.css" %}">
 
   </head>
   <body>
@@ -13,9 +13,10 @@
       <div class="sidebar">
         <div class="profile"></div>
         <div class="nav-item">Home</div>
+        <div class="nav-item">Explore</div>
+
         <a href="{% url 'clubs' %}">
             <div class="nav-item">Clubs</div></a>        
-        <div class="nav-item">Clubs</div>
         <div class="nav-item">Events</div>
         <div class="nav-item">Profile</div>
       </div>
@@ -23,33 +24,16 @@
       <div class="main">
         <div class="content">
           <div class="general">
-            <h1>General</h1>
-
-            <div></div>
-            <p>General<br />Announcements</p>
-
-            <div></div>
-            <p>UTRGV Announcements/<br />Events</p>
-          </div>
-
-          <div class="calendar">
-            <h2>Event<br />Calendar</h2>
-
-            <div></div>
-
-            <h3>Events List</h3>
-            <div class="events-list">
-              -<br />
-              -<br />
-              -<br />
-              -<br />
-              -
-            </div>
+            <h1>Clubs</h1>
+        <a href="{% url 'create_a_club' %}">
+            <div class="nav-item">Create A Club</div></a>    
+        <a href="{% url 'club_match' %}">
+            <div class="nav-item">Club Match</div></a>    
           </div>
         </div>
       </div>
     </div>
-    <script src="{% static "js\home.js" %}"></script>
+    <script src="{% static "js\clubs.js" %}"></script>
 
   </body>
 </html>

@@ -20,5 +20,7 @@ from finalApp import views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('club_match/', views.club_match, name='club_match')
+    path('club_match/', views.club_match, name='club_match'),
+    path('clubs/', views.clubs, name='clubs'),
+    path('clubs/create/', views.create_a_club, name='create_a_club')
 ]
