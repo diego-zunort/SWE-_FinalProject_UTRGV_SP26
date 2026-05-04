@@ -1,4 +1,21 @@
+# Python
 .venv/
+venv/
 __pycache__/
 *.py[cod]
-final_project/db.sqlite3
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Local SQLite databases
+*.sqlite
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-shm
+*.sqlite3-wal

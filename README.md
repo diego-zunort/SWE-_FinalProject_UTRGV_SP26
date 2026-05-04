@@ -21,6 +21,13 @@ Goal:
      Connecting student's to clubs, organizations, and campus events that align with their
      interests, hobbies, major, etc with a simple swipe-based interface.
 
+Local setup and database workflow:
+
+     1. Copy `.env.example` to `.env`.
+     2. Give yourself a local database name in `.env`, such as `DJANGO_SQLITE_PATH=db.rafael.sqlite3`.
+     3. Run `python manage.py migrate` from the `final_project/` folder.
+     4. Do not commit `.env` or SQLite database files. Commit model and migration files instead.
+
 Features:
 
      - Prompts users to share their hobbies, favourite activities, interests, etc
