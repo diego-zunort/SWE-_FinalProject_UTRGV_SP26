@@ -15,6 +15,13 @@ class Club(models.Model):
 	name = models.CharField(max_length=100)
 	desc = models.TextField()
 	meetTimes = models.CharField(max_length=100)
+	category = models.CharField(max_length=100)
+	emailContact = models.EmailField()
+	insta = models.URLField()
+	vLink = models.URLField()
+	tag1 = models.CharField(max_length= 100)
+	tag2 = models.CharField(max_length= 100)
 	
+
 	def __str__(self):
 		return self.name
