@@ -1,0 +1,243 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Venture{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body class="app-body">
+    <div class="app-window">
+      <div class="app-shell">
+        <aside class="workspace-sidebar" aria-label="Workspace navigation">
+          <div class="workspace-header">
+            <a class="workspace-logo" href="{% url 'home' %}" aria-label="Venture home">V</a>
+            <div>
+              <strong>Venture</strong>
+              <span>UTRGV student hub</span>
+            </div>
+            <span class="workspace-caret">v</span>
+          </div>
+
+          <nav class="sidebar-nav" aria-label="Channels">
+            <a class="match-feature-link {% block nav_match_class %}{% endblock %}" href="{% url 'club_match' %}">
+              <span class="match-feature-icon">Explore</span>
+              <span>
+                <strong>Club Match</strong>
+                <em>Discover clubs that fit you</em>
+              </span>
+            </a>
+            <a class="sidebar-link sidebar-simple {% block nav_home_class %}{% endblock %}" href="{% url 'home' %}">
+              <span>general</span>
+            </a>
+            <a class="sidebar-link sidebar-simple" href="{% url 'home' %}">
+              <span>events</span>
+            </a>
+            <a class="sidebar-link sidebar-simple {% block nav_profile_class %}{% endblock %}" href="{% url 'profile' %}">
+              <span>profile</span>
+            </a>
+          </nav>
+
+          <details class="sidebar-dropdown" open>
+            <summary>
+              <span>Club Spaces</span>
+              <span>{{ club_spaces|length }}</span>
+            </summary>
+            <div class="club-space-list">
+              {% for club_space in club_spaces %}
+                <a
+                  class="sidebar-link club-space-link {% if active_club.slug == club_space.slug %}is-active{% endif %}"
+                  href="{% url 'club_hub' club_space.slug %}"
+                >
+                  <span class="server-avatar {{ club_space.dot_class }}">{{ club_space.initials }}</span>
+                  <span>{{ club_space.name }}</span>
+                </a>
+              {% endfor %}
+            </div>
+          </details>
+
+          <section class="sidebar-section">
+            <h2>Direct Messages</h2>
+            <a class="sidebar-link muted" href="{% url 'profile' %}">
+              <span class="avatar-mini">RA</span>
+              <span>{{ request.user.username|default:"Rafael" }}</span>
+            </a>
+            <a class="sidebar-link muted" href="{% url 'home' %}">
+              <span class="avatar-mini">DZ</span>
+              <span>Diego</span>
+            </a>
+            <a class="sidebar-link muted" href="{% url 'home' %}">
+              <span class="avatar-mini">JL</span>
+              <span>Javier</span>
+            </a>
+          </section>
+
+          <form method="post" action="{% url 'logout' %}" class="sidebar-logout">
+            {% csrf_token %}
+            <button type="submit">Exit</button>
+          </form>
+        </aside>
+
+        <main class="conversation">
+          <header class="channel-header">
+            <div class="channel-title">
+              <span class="channel-star" aria-hidden="true">*</span>
+              <div>
+                <h1>{% block channel_name %}general{% endblock %}</h1>
+                <p>{% block channel_subtitle %}Campus matches, clubs, and conversations{% endblock %}</p>
+              </div>
+            </div>
+            <div class="channel-actions">
+              {% block channel_actions %}
+              <span class="member-stack" aria-label="Active members">
+                <span>RA</span>
+                <span>DZ</span>
+                <span>JL</span>
+              </span>
+              <button type="button">Invite</button>
+              {% endblock %}
+            </div>
+          </header>
+
+          <nav class="channel-tabs" aria-label="Channel sections">
+            <a class="is-active" href="#">Messages</a>
+            <a href="#">Events</a>
+            <a href="#">Files</a>
+            <a href="#">Canvas</a>
+          </nav>
+
+          <section class="conversation-scroll">
+            {% block content %}{% endblock %}
+          </section>
+
+          {% block composer %}
+          <form class="composer" aria-label="Message composer">
+            <div class="composer-toolbar" aria-hidden="true">
+              <span>B</span>
+              <span>I</span>
+              <span>U</span>
+              <span>@</span>
+            </div>
+            <label class="sr-only" for="message-input">Message</label>
+            <textarea id="message-input" rows="2" placeholder="{% block composer_placeholder %}Message this channel{% endblock %}"></textarea>
+            <div class="composer-actions">
+              <div>
+                <button type="button">+</button>
+                <button type="button">Aa</button>
+                <button type="button">@</button>
+              </div>
+              <button type="button" class="send-button">Send</button>
+            </div>
+          </form>
+          {% endblock %}
+        </main>
+
+        <aside class="events-sidebar" aria-label="Calendar and club events">
+          <header class="events-header">
+            <h2>May</h2>
+            <div class="events-header-actions" aria-hidden="true">
+              <span>+</span>
+              <span>...</span>
+            </div>
+          </header>
+
+          <section class="mini-calendar" aria-label="May calendar">
+            <div class="calendar-weekdays" aria-hidden="true">
+              <span>S</span>
+              <span>M</span>
+              <span>T</span>
+              <span>W</span>
+              <span>T</span>
+              <span>F</span>
+              <span>S</span>
+            </div>
+            <div class="calendar-days">
+              <a href="#" class="calendar-day">3</a>
+              <a href="#" class="calendar-day is-today">4</a>
+              <a href="#" class="calendar-day">5</a>
+              <a href="#" class="calendar-day">6</a>
+              <a href="#" class="calendar-day">7</a>
+              <a href="#" class="calendar-day">8</a>
+              <a href="#" class="calendar-day">9</a>
+            </div>
+          </section>
+
+          <section class="agenda" aria-label="Upcoming club events">
+            <div class="agenda-section">
+              <h3>Today · Monday · May 4</h3>
+              <article class="agenda-event">
+                <time>4:00 PM<span>1h</span></time>
+                <div class="agenda-event-card accent-teal">
+                  <strong>Club Match Social</strong>
+                  <span>Student Union Commons</span>
+                  <div class="event-attendees">
+                    <span>RA</span>
+                    <span>DZ</span>
+                    <span>JL</span>
+                  </div>
+                </div>
+              </article>
+              <article class="agenda-event">
+                <time>5:30 PM<span>2h</span></time>
+                <div class="agenda-event-card accent-orange">
+                  <strong>Robotics Lab Build Night</strong>
+                  <span>Engineering Lab 204</span>
+                  <div class="event-attendees">
+                    <span>RL</span>
+                    <span>SC</span>
+                    <span>+8</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div class="agenda-section">
+              <h3>Tuesday · May 5</h3>
+              <p class="empty-agenda">No events scheduled</p>
+            </div>
+
+            <div class="agenda-section">
+              <h3>Wednesday · May 6</h3>
+              <p class="empty-agenda">No events scheduled</p>
+            </div>
+
+            <div class="agenda-section">
+              <h3>Thursday · May 7</h3>
+              <article class="agenda-event">
+                <time>6:00 PM<span>90m</span></time>
+                <div class="agenda-event-card accent-green">
+                  <strong>Intro Belay Clinic</strong>
+                  <span>UTRGV Club Sports Climbing</span>
+                  <div class="event-attendees">
+                    <span>CC</span>
+                    <span>MT</span>
+                    <span>+4</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div class="agenda-section">
+              <h3>Friday · May 8</h3>
+              <article class="agenda-event">
+                <time>4:00 PM<span>2h</span></time>
+                <div class="agenda-event-card accent-purple">
+                  <strong>Portfolio Review Night</strong>
+                  <span>Frontera Devs</span>
+                  <div class="event-attendees">
+                    <span>FD</span>
+                    <span>JL</span>
+                    <span>+6</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </div>
+    {% block extra_scripts %}{% endblock %}
+  </body>
+</html>

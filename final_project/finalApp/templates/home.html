@@ -1,139 +1,89 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Venture</title>
-    <style>
-      body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background-color: #646469;
-      }
+{% extends "base.html" %}
 
-      .container {
-        margin: 20px;
-        background: #ffffff;
-        border-radius: 40px;
-        display: flex;
-        padding: 20px;
-        min-height: 90vh;
-        gap: 20px;
-      }
+{% block title %}Venture | General{% endblock %}
+{% block nav_home_class %}is-active{% endblock %}
+{% block channel_name %}general{% endblock %}
+{% block channel_subtitle %}Announcements, campus activity, and club updates{% endblock %}
 
-      .sidebar {
-        width: 120px;
-        background: #f05023;
-        border-radius: 30px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 20px 10px;
-        color: white;
-      }
+{% block content %}
+  <div class="date-divider"><span>Today</span></div>
 
-      .profile {
-        width: 60px;
-        height: 60px;
-        background: white;
-        border-radius: 50%;
-        margin-bottom: 20px;
-      }
-
-      .nav-item {
-        border: 1px solid white;
-        border-radius: 10px;
-        padding: 8px;
-        margin: 6px 0;
-        width: 100%;
-        text-align: center;
-        font-size: 14px;
-      }
-
-      .main {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      .content {
-        display: flex;
-        gap: 20px;
-        flex: 1;
-      }
-
-      .general {
-        flex: 1;
-        background: #f05023;
-        border-radius: 30px;
-        color: white;
-        padding: 30px;
-        text-align: center;
-      }
-
-      .calendar {
-        width: 250px;
-        background: #f05023;
-        border-radius: 30px;
-        color: white;
-        padding: 30px;
-        text-align: center;
-      }
-
-      h1,
-      h2,
-      h3 {
-        margin: 10px 0;
-      }
-
-      .events-list {
-        text-align: left;
-        font-size: 24px;
-        line-height: 1.8;
-        margin-top: 10px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="sidebar">
-        <div class="profile"></div>
-        <div class="nav-item">Home</div>
-        <div class="nav-item">Explore</div>
-        <div class="nav-item">Clubs</div>
-        <div class="nav-item">Events</div>
-        <div class="nav-item">Profile</div>
+  <article class="message">
+    <div class="message-avatar is-bot">V</div>
+    <div class="message-body">
+      <div class="message-meta">
+        <strong>Venture Bot</strong>
+        <time>9:00 AM</time>
       </div>
+      <p>
+        Welcome back, {{ request.user.username|default:"student" }}. Your workspace is ready for club matches,
+        event updates, and conversations with organizations you join.
+      </p>
+      <div class="reaction-row">
+        <span class="reaction">3 matches</span>
+        <span class="reaction">2 events</span>
+        <span class="reaction">1 club invite</span>
+      </div>
+    </div>
+  </article>
 
-      <div class="main">
-        <div class="content">
-          <div class="general">
-            <h1>General</h1>
+  <article class="message">
+    <div class="message-avatar">RA</div>
+    <div class="message-body">
+      <div class="message-meta">
+        <strong>Rafael Anulao</strong>
+        <time>9:18 AM</time>
+      </div>
+      <p>
+        The club matching flow is moving into the main workspace. Students should be able to discover,
+        save, and join clubs without leaving the conversation layout.
+      </p>
+      <div class="message-grid">
+        <section class="panel">
+          <p class="panel-kicker">Next Match</p>
+          <h2>Robotics Lab</h2>
+          <p>Hands-on hardware builds, weekly demos, and competition prep.</p>
+        </section>
+        <section class="panel">
+          <p class="panel-kicker">Upcoming</p>
+          <h2>Student Org Fair</h2>
+          <p>Tuesday at 3:00 PM in the student union courtyard.</p>
+        </section>
+        <section class="panel">
+          <p class="panel-kicker">Activity</p>
+          <h2>Frontera Devs</h2>
+          <p>New portfolio review thread opened for student project feedback.</p>
+        </section>
+      </div>
+    </div>
+  </article>
 
-            <div></div>
-            <p>General<br />Announcements</p>
-
-            <div></div>
-            <p>UTRGV Announcements/<br />Events</p>
-          </div>
-
-          <div class="calendar">
-            <h2>Event<br />Calendar</h2>
-
-            <div></div>
-
-            <h3>Events List</h3>
-            <div class="events-list">
-              -<br />
-              -<br />
-              -<br />
-              -<br />
-              -
-            </div>
-          </div>
+  <article class="message">
+    <div class="message-avatar">DZ</div>
+    <div class="message-body">
+      <div class="message-meta">
+        <strong>Diego Zuniga</strong>
+        <time>10:04 AM</time>
+      </div>
+      <p>Joined clubs will appear in the left sidebar so students can move between spaces like channels.</p>
+        <div class="club-list">
+          <a class="club-list-item" href="{% url 'club_hub' 'robotics-lab' %}">
+            <span class="club-dot dot-teal"></span>
+            <strong>Robotics Lab</strong>
+            <span>Build night</span>
+          </a>
+          <a class="club-list-item" href="{% url 'club_hub' 'utrgv-club-sports-climbing' %}">
+            <span class="club-dot dot-orange"></span>
+            <strong>UTRGV Club Sports Climbing</strong>
+            <span>Belay clinic</span>
+          </a>
+          <a class="club-list-item" href="{% url 'club_hub' 'frontera-devs' %}">
+            <span class="club-dot dot-green"></span>
+            <strong>Frontera Devs</strong>
+            <span>Portfolio night</span>
+          </a>
         </div>
       </div>
     </div>
-  </body>
-</html>
+  </article>
+{% endblock %}
