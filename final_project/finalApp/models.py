@@ -10,3 +10,12 @@ class Profile(models.Model):
 
 	def __str__(self):
 		return self.user.username
+	
+class club(models.Model) :
+	name = models.CharField(max_length=100)
+	desc = models.TextField()
+	meetTimes = models.CharField(max_length=100)
+	
+	def __str__(self):
+		return self.name
+
