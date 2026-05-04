@@ -1,8 +1,73 @@
-<h2>Profile</h2>
+{% extends "base.html" %}
 
-<p><strong>Username:</strong> {{ request.user.username }}</p>
-<p><strong>Bio:</strong> {{ profile.bio|default:"No bio yet." }}</p>
-<p><strong>Student ID:</strong> {{ profile.student_id|default:"Not set" }}</p>
-<p><strong>Enrolled:</strong> {{ profile.enrolled|yesno:"Yes,No" }}</p>
+{% block title %}Venture | Profile{% endblock %}
+{% block nav_profile_class %}is-active{% endblock %}
+{% block channel_name %}profile{% endblock %}
+{% block channel_subtitle %}Student details used for club recommendations{% endblock %}
 
-<a href="{% url 'home' %}">Back to home</a>
+{% block content %}
+  <div class="date-divider"><span>Student Profile</span></div>
+
+  <article class="message">
+    <div class="message-avatar">{{ request.user.username|default:"RA"|slice:":2"|upper }}</div>
+    <div class="message-body">
+      <div class="message-meta">
+        <strong>{{ request.user.username|default:"Student" }}</strong>
+        <time>Profile</time>
+      </div>
+      <div class="profile-grid">
+        <section class="profile-panel">
+          <div class="profile-hero">
+            <div class="profile-avatar">{{ request.user.username|default:"RA"|slice:":2"|upper }}</div>
+            <div>
+              <h2>{{ request.user.username|default:"Student" }}</h2>
+              <p>{{ profile.bio|default:"No bio yet." }}</p>
+            </div>
+          </div>
+          <div class="profile-facts">
+            <div class="profile-fact">
+              <strong>Student ID</strong>
+              <span>{{ profile.student_id|default:"Not set" }}</span>
+            </div>
+            <div class="profile-fact">
+              <strong>Status</strong>
+              <span>{{ profile.enrolled|yesno:"Enrolled,Not enrolled" }}</span>
+            </div>
+            <div class="profile-fact">
+              <strong>Workspace</strong>
+              <span>Venture at UTRGV</span>
+            </div>
+          </div>
+          <a class="profile-button" href="{% url 'home' %}">Back to general</a>
+        </section>
+
+        <section class="profile-panel">
+          <p class="panel-kicker">Matching Signals</p>
+          <h2>Preferences</h2>
+          <p>These interests help shape the club recommendations shown in Club Match.</p>
+          <div class="pill-row">
+            <span class="profile-chip">Technology</span>
+            <span class="profile-chip">Service</span>
+            <span class="profile-chip">Creative projects</span>
+            <span class="profile-chip">Evening meetings</span>
+            <span class="profile-chip">Beginner friendly</span>
+          </div>
+          <div class="profile-facts">
+            <div class="profile-fact">
+              <strong>Top Matches</strong>
+              <span>Robotics Lab, UTRGV Club Sports Climbing, Frontera Devs</span>
+            </div>
+            <div class="profile-fact">
+              <strong>Availability</strong>
+              <span>Weekday evenings</span>
+            </div>
+            <div class="profile-fact">
+              <strong>Goal</strong>
+              <span>Find active student communities and upcoming events.</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </article>
+{% endblock %}

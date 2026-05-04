@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Venture | {{ active_club.name }}{% endblock %}
+{% block channel_name %}{{ active_club.channel }}{% endblock %}
+{% block channel_subtitle %}{{ active_club.summary }}{% endblock %}
+{% block composer_placeholder %}Message {{ active_club.channel }}{% endblock %}
+
+{% block channel_actions %}
+  <span class="member-stack" aria-label="Active members">
+    <span>{{ active_club.initials }}</span>
+    <span>RA</span>
+    <span>DZ</span>
+  </span>
+  <button type="button">Join call</button>
+{% endblock %}
+
+{% block content %}
+  <section class="hub-hero">
+    <div class="hub-server-avatar {{ active_club.dot_class }}">{{ active_club.initials }}</div>
+    <div>
+      <p class="panel-kicker">Club Hub</p>
+      <h2>{{ active_club.name }}</h2>
+      <p>{{ active_club.summary }}</p>
+      <div class="pill-row">
+        {% for tag in active_club.tags %}
+          <span class="status-pill">{{ tag }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <div class="hub-grid">
+    <section class="panel">
+      <p class="panel-kicker">Meeting</p>
+      <h2>{{ active_club.meeting }}</h2>
+      <p>{{ active_club.next_event }} is the next highlighted activity.</p>
+    </section>
+    <section class="panel">
+      <p class="panel-kicker">Members</p>
+      <h2>{{ active_club.members }}</h2>
+      <p>Students can use this hub for announcements, questions, and shared resources.</p>
+    </section>
+    <section class="panel">
+      <p class="panel-kicker">Channels</p>
+      <div class="mini-channel-list">
+        {% for channel in active_club.channels %}
+          <span>{{ channel }}</span>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+
+  <div class="date-divider"><span>{{ active_club.name }} Messages</span></div>
+
+  {% for message in active_club.messages %}
+    <article class="message">
+      <div class="message-avatar {% if message.avatar == 'V' %}is-bot{% endif %}">{{ message.avatar }}</div>
+      <div class="message-body">
+        <div class="message-meta">
+          <strong>{{ message.author }}</strong>
+          <time>{{ message.time }}</time>
+        </div>
+        <p>{{ message.body }}</p>
+        <div class="reaction-row">
+          <span class="reaction">Seen by club</span>
+          <span class="reaction">Reply</span>
+        </div>
+      </div>
+    </article>
+  {% endfor %}
+{% endblock %}
