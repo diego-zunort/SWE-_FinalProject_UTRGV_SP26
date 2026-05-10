@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import Club, Profile
+from .models import Club, Profile, ClubMembership
 from .forms import ProfileForm
 
 def app_context(request, **extra):
@@ -31,7 +31,7 @@ def home(request):
 
 @login_required
 def club_match(request):
-    club = Club.objects.first()
+    club = Club.objects.order_by('?').first()
     return render(request, 'club_match.html', app_context(request, club=club))
 
 
@@ -80,3 +80,14 @@ def profile(request):
         form = ProfileForm(instance=profile)
     
     return render(request, "profile.html", app_context(request, profile=profile, form=form))
+
+@login_required
+def join_club(request, club_id):
+    club = get_object_or_404(Club, id=club_id)
+    ClubMembership.objects.get_or_create(user=request.user, club=club)
+    return redirect('club_hub',club_slug = club.slug)
+
+@login_required
+def skip_club(request,club_id):
+    club = Club.objects.exclude(id=club_id).order_by('?').first()
+    return render(request, 'club_match.html', app_context(request, club=club))

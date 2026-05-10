@@ -23,45 +23,49 @@
       <div class="match-layout">
         <section class="match-card">
           <div class="match-cover">
-            <span>{{ club.name|default:"RL"|slice:":2"|upper }}</span>
+            <span>{{ club.name|slice:":2"|upper }}</span>
           </div>
           <div class="match-card-body">
             <div class="pill-row">
-              <span class="status-pill">92% match</span>
-              <span class="status-pill">Project teams</span>
-              <span class="status-pill">Beginner friendly</span>
+              <span class="status-pill">{{club.category}}</span>
+              <span class="status-pill">{{club.tag1}}</span>
+              <span class="status-pill">{{club.tag2}}</span>
             </div>
-            <h2>{{ club.name|default:"Robotics Lab" }}</h2>
+            <h2>{{ club.name }}</h2>
             <p>
-              {{ club.desc|default:"Build robots, learn embedded systems, and meet students who like turning ideas into working prototypes." }}
+              
             </p>
-            <div class="match-actions">
-              <button class="match-action skip" type="button" data-action="Skipped">Skip</button>
-              <button class="match-action save" type="button" data-action="Saved">Save</button>
-              <button class="match-action join" type="button" data-action="Joined">Join</button>
-            </div>
+              <div class="match-actions">
+                  <form method="POST" action="{% url 'skip_club' club.id %}">
+                      {% csrf_token %}
+                      <button class="match-action skip" type="submit">Skip</button>
+                  </form>
+                  <form method="POST" action="{% url 'join_club' club.id %}">
+                      {% csrf_token %}
+                      <button class="match-action join" type="submit" data-action="Joined">Join</button>
+                  </form>
+              </div>
             <div class="match-status" aria-live="polite"></div>
           </div>
         </section>
 
         <section class="club-info-panel">
-          <h2>Club Info</h2>
-          <p>Members collaborate on builds, post announcements, and share upcoming project nights.</p>
+          <h2>{{club.name}}</h2>
           <div class="info-row">
             <strong>Description</strong>
-            <span>{{ club.desc|default:"Weekly build sessions, group projects, and showcase events for student makers." }}</span>
+            <span>{{ club.desc }}</span>
           </div>
           <div class="info-row">
             <strong>Meeting Time</strong>
-            <span>{{ club.meetTimes|default:"Wednesdays at 5:30 PM" }}</span>
+            <span>{{ club.meetTimes }}</span>
           </div>
           <div class="info-row">
-            <strong>Good Fit</strong>
-            <span>Students interested in engineering, design, coding, teamwork, or competitions.</span>
+            <strong>Category</strong>
+            <span>{{club.category}}</span>
           </div>
           <div class="info-row">
-            <strong>Next Step</strong>
-            <span>Join the club space to unlock announcements, events, and member chat.</span>
+            <strong>Contact</strong>
+            <span>{{club.emailContact}}</span>
           </div>
         </section>
       </div>

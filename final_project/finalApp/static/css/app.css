@@ -624,6 +624,9 @@ a {
   gap: 7px;
   margin-top: 10px;
 }
+.pill-row{
+  margin-bottom: 0.75rem;
+}
 
 .reaction,
 .status-pill,
@@ -810,7 +813,12 @@ a {
 }
 
 .match-card-body {
-  padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    align-items: center;
+    text-align: center;
 }
 
 .match-card-body p {
@@ -820,10 +828,20 @@ a {
 }
 
 .match-actions {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 16px;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.match-actions form {
+    margin: 0;
+    padding: 0;
+}
+
+.match-actions form .match-action {
+    width: 100%;
 }
 
 .match-action {
