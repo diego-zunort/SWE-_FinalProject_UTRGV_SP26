@@ -365,6 +365,13 @@ a {
   margin-top: 4px;
 }
 
+.sidebar-empty {
+  margin: 8px 9px;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .club-space-link {
   grid-template-columns: 34px minmax(0, 1fr);
   min-height: 38px;
