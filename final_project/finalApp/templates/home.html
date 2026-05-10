@@ -67,21 +67,15 @@
       </div>
       <p>Joined clubs will appear in the left sidebar so students can move between spaces like channels.</p>
         <div class="club-list">
-          <a class="club-list-item" href="{% url 'club_hub' 'robotics-lab' %}">
-            <span class="club-dot dot-teal"></span>
-            <strong>Robotics Lab</strong>
-            <span>Build night</span>
-          </a>
-          <a class="club-list-item" href="{% url 'club_hub' 'utrgv-club-sports-climbing' %}">
-            <span class="club-dot dot-orange"></span>
-            <strong>UTRGV Club Sports Climbing</strong>
-            <span>Belay clinic</span>
-          </a>
-          <a class="club-list-item" href="{% url 'club_hub' 'frontera-devs' %}">
-            <span class="club-dot dot-green"></span>
-            <strong>Frontera Devs</strong>
-            <span>Portfolio night</span>
-          </a>
+          {% for club_space in club_spaces %}
+            <a class="club-list-item" href="{% url 'club_hub' club_space.slug %}">
+              <span class="club-dot {{ club_space.dot_class }}"></span>
+              <strong>{{ club_space.name }}</strong>
+              <span>{{ club_space.meeting }}</span>
+            </a>
+          {% empty %}
+            <p class="sidebar-empty">No joined clubs yet.</p>
+          {% endfor %}
         </div>
       </div>
     </div>

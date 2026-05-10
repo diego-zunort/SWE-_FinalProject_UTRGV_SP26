@@ -1,3 +1,20 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Club, ClubMembership, Profile
+
+
+@admin.register(Club)
+class ClubAdmin(admin.ModelAdmin):
+	list_display = ("name", "category", "meetTimes", "emailContact")
+	search_fields = ("name", "desc", "category", "tag1", "tag2")
+	list_filter = ("category",)
+
+
+@admin.register(ClubMembership)
+class ClubMembershipAdmin(admin.ModelAdmin):
+	list_display = ("user", "club", "joined_at")
+	search_fields = ("user__username", "club__name")
+	list_filter = ("club",)
+
+
+admin.site.register(Profile)
