@@ -5,7 +5,7 @@ from django.http import Http404
 from django.shortcuts import redirect, render
 
 from .models import Club, Profile
-
+from .forms import ProfileForm
 
 CLUB_SPACES = [
     {
@@ -152,4 +152,15 @@ def profile(request):
         user=request.user,
         defaults={"student_id": 0},
     )
-    return render(request, "profile.html", app_context(profile=profile))
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            profile_instance = form.save(commit=False)
+            interests_list = form.cleaned_data['interests']
+            profile_instance.interests = ', '.join(interests_list)
+            profile_instance.save()
+            return redirect('home')
+    else:
+        form = ProfileForm(instance=profile)
+    
+    return render(request, "profile.html", {'form':form, 'profile': profile})
