@@ -54,6 +54,8 @@
                   <span class="server-avatar {{ club_space.dot_class }}">{{ club_space.initials }}</span>
                   <span>{{ club_space.name }}</span>
                 </a>
+              {% empty %}
+                <p class="sidebar-empty">No joined clubs yet.</p>
               {% endfor %}
             </div>
           </details>

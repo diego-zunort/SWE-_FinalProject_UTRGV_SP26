@@ -22,7 +22,7 @@
       <h2>{{ active_club.name }}</h2>
       <p>{{ active_club.summary }}</p>
       <div class="pill-row">
-        {% for tag in active_club.tags %}
+        {% for tag in active_club.tag_list %}
           <span class="status-pill">{{ tag }}</span>
         {% endfor %}
       </div>
@@ -33,39 +33,38 @@
     <section class="panel">
       <p class="panel-kicker">Meeting</p>
       <h2>{{ active_club.meeting }}</h2>
-      <p>{{ active_club.next_event }} is the next highlighted activity.</p>
+      <p>Check this hub for the next highlighted activity.</p>
     </section>
     <section class="panel">
       <p class="panel-kicker">Members</p>
-      <h2>{{ active_club.members }}</h2>
+      <h2>{{ active_club.member_count_label }}</h2>
       <p>Students can use this hub for announcements, questions, and shared resources.</p>
     </section>
     <section class="panel">
       <p class="panel-kicker">Channels</p>
       <div class="mini-channel-list">
-        {% for channel in active_club.channels %}
-          <span>{{ channel }}</span>
-        {% endfor %}
+        <span>announcements</span>
+        <span>questions</span>
+        <span>resources</span>
       </div>
     </section>
   </div>
 
   <div class="date-divider"><span>{{ active_club.name }} Messages</span></div>
 
-  {% for message in active_club.messages %}
-    <article class="message">
-      <div class="message-avatar {% if message.avatar == 'V' %}is-bot{% endif %}">{{ message.avatar }}</div>
-      <div class="message-body">
-        <div class="message-meta">
-          <strong>{{ message.author }}</strong>
-          <time>{{ message.time }}</time>
-        </div>
-        <p>{{ message.body }}</p>
-        <div class="reaction-row">
-          <span class="reaction">Seen by club</span>
-          <span class="reaction">Reply</span>
-        </div>
+  <article class="message">
+    <div class="message-avatar is-bot">V</div>
+    <div class="message-body">
+      <div class="message-meta">
+        <strong>Venture Bot</strong>
+        <time>9:00 AM</time>
       </div>
-    </article>
-  {% endfor %}
+      <p>Welcome to {{ active_club.name }}. This space is for updates, meeting notes, and project help.</p>
+      <div class="reaction-row">
+        <span class="reaction">Seen by club</span>
+        <span class="reaction">Reply</span>
+      </div>
+    </div>
+  </article>
+
 {% endblock %}
