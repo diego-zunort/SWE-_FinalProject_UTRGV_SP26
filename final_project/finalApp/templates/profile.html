@@ -40,32 +40,34 @@
           </div>
           <a class="profile-button" href="{% url 'home' %}">Back to general</a>
         </section>
-
+        
         <section class="profile-panel">
+
           <p class="panel-kicker">Matching Signals</p>
           <h2>Preferences</h2>
           <p>These interests help shape the club recommendations shown in Club Match.</p>
-          <div class="pill-row">
-            <span class="profile-chip">Technology</span>
-            <span class="profile-chip">Service</span>
-            <span class="profile-chip">Creative projects</span>
-            <span class="profile-chip">Evening meetings</span>
-            <span class="profile-chip">Beginner friendly</span>
-          </div>
-          <div class="profile-facts">
+
+          <form method="POST">
+            {% csrf_token %}
+            
             <div class="profile-fact">
-              <strong>Top Matches</strong>
-              <span>Robotics Lab, UTRGV Club Sports Climbing, Frontera Devs</span>
+              <strong>Major</strong>
+              {{ form.major }}
             </div>
+
             <div class="profile-fact">
-              <strong>Availability</strong>
-              <span>Weekday evenings</span>
+              <strong>Interests</strong>
+              {{ form.interests }}
             </div>
+
             <div class="profile-fact">
-              <strong>Goal</strong>
-              <span>Find active student communities and upcoming events.</span>
+              <strong>Bio</strong>
+              {{ form.bio }}
             </div>
-          </div>
+
+            <button type="submit" class="profile-button">Save Profile</button>
+          </form>
+
         </section>
       </div>
     </div>
