@@ -90,3 +90,25 @@ class ClubMembership(models.Model):
 
 	def __str__(self):
 		return f"{self.user.username} in {self.club.name}"
+  
+  class Event(models.Model):
+
+	eventName = models.CharField(max_length=100)
+	desc = models.TextField()
+	time = models.CharField(max_length=100)
+	location = models.CharField(max_length=100)
+	hostClub = models.CharField(max_length=100)
+	requirements = models.CharField(max_length=100)
+
+	def __str__(self):
+		return self.name
+	
+class ChatMessage(models.Model):
+
+	club = models.CharField(max_length=100)
+	author = models.CharField(max_length=100)
+	message = models.TextField()
+	timestamp = models.CharField(max_length=100)
+
+	def __str__(self):
+		return self.name

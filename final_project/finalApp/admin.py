@@ -1,6 +1,5 @@
 from django.contrib import admin
-
-from .models import Club, ClubMembership, Profile
+from .models import Club, ClubMembership, Profile, Event, ChatMessage
 
 
 @admin.register(Club)
@@ -18,3 +17,6 @@ class ClubMembershipAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Profile)
+admin.site.register(Club)
+admin.site.register(Event)
+admin.site.register(ChatMessage)
