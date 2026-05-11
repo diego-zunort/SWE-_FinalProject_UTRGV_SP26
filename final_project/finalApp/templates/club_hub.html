@@ -4,15 +4,7 @@
 {% block channel_name %}{{ active_club.channel }}{% endblock %}
 {% block channel_subtitle %}{{ active_club.summary }}{% endblock %}
 {% block composer_placeholder %}Message {{ active_club.channel }}{% endblock %}
-
-{% block channel_actions %}
-  <span class="member-stack" aria-label="Active members">
-    <span>{{ active_club.initials }}</span>
-    <span>RA</span>
-    <span>DZ</span>
-  </span>
-  <button type="button">Join call</button>
-{% endblock %}
+{% block channel_actions %}{% endblock %}
 
 {% block content %}
   <section class="hub-hero">
@@ -50,21 +42,136 @@
     </section>
   </div>
 
-  <div class="date-divider"><span>{{ active_club.name }} Messages</span></div>
+<div class="date-divider"><span>{{ active_club.name }} Messages</span></div>
 
-  <article class="message">
-    <div class="message-avatar is-bot">V</div>
-    <div class="message-body">
-      <div class="message-meta">
-        <strong>Venture Bot</strong>
-        <time>9:00 AM</time>
+<!-- dynamic chat messages container -->
+<div id="chat-messages">
+  {% for message in club_messages %}
+    <article class="message">
+      <div class="message-avatar">{{ message.author.username|slice:":2"|upper }}</div>
+      <div class="message-body">
+        <div class="message-meta">
+          <strong>{{ message.author.username }}</strong>
+          <time>{{ message.timestamp|date:"g:i A" }}</time>
+        </div>
+        <p>{{ message.message }}</p>
       </div>
-      <p>Welcome to {{ active_club.name }}. This space is for updates, meeting notes, and project help.</p>
-      <div class="reaction-row">
-        <span class="reaction">Seen by club</span>
-        <span class="reaction">Reply</span>
+    </article>
+  {% empty %}
+    <article class="message" id="empty-chat-message">
+      <div class="message-avatar is-bot">V</div>
+      <div class="message-body">
+        <p>No messages yet. Start the conversation.</p>
       </div>
+    </article>
+  {% endfor %}
+</div>
+
+
+{% endblock %}
+<!-- The following block is for the message composer form, which is included in the base template -->
+{% block composer %}
+  <form class="composer chat-composer" id="chat-form" aria-label="Message composer">
+    <div class="composer-toolbar" aria-hidden="true">
+      <span>B</span>
+      <span>I</span>
+      <span>U</span>
+      <span>@</span>
     </div>
-  </article>
 
+    <label class="sr-only" for="message-input">Message</label>
+    <textarea id="message-input" rows="2" placeholder="Message {{ active_club.channel }}"></textarea>
+
+    <div class="composer-actions">
+      <div>
+        <button type="button">+</button>
+        <button type="button">Aa</button>
+        <button type="button">@</button>
+      </div>
+      <button type="submit" class="send-button" disabled>Send</button>
+    </div>
+  </form>
+{% endblock %}
+
+<!-- JavaScript for handling WebSocket connections and real-time chat updates -->
+{% block extra_scripts %}
+<script>
+  const clubSlug = "{{ active_club.slug|escapejs }}";
+  const scheme = window.location.protocol === "https:" ? "wss" : "ws";
+  const chatSocket = new WebSocket(
+    `${scheme}://${window.location.host}/ws/clubs/${clubSlug}/chat/`
+  );
+
+  const chatForm = document.querySelector("#chat-form");
+  const messageInput = document.querySelector("#message-input");
+  const messagesList = document.querySelector("#chat-messages");
+  const sendButton = chatForm.querySelector(".send-button");
+  const conversationScroll = document.querySelector(".conversation-scroll");
+
+  function addMessage(author, message, timestamp) {
+    const emptyMessage = document.querySelector("#empty-chat-message");
+    if (emptyMessage) {
+      emptyMessage.remove();
+    }
+
+    const article = document.createElement("article");
+    article.className = "message";
+
+    const avatar = document.createElement("div");
+    avatar.className = "message-avatar";
+    avatar.textContent = author.slice(0, 2).toUpperCase();
+
+    const body = document.createElement("div");
+    body.className = "message-body";
+
+    const meta = document.createElement("div");
+    meta.className = "message-meta";
+
+    const strong = document.createElement("strong");
+    strong.textContent = author;
+
+    const time = document.createElement("time");
+    time.textContent = timestamp;
+
+    const text = document.createElement("p");
+    text.textContent = message;
+
+    meta.append(strong, time);
+    body.append(meta, text);
+    article.append(avatar, body);
+    messagesList.append(article);
+
+    conversationScroll.scrollTop = conversationScroll.scrollHeight;
+  }
+
+  chatSocket.onopen = function() {
+    sendButton.disabled = false;
+  };
+
+  chatSocket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    addMessage(data.author, data.message, data.timestamp);
+  };
+
+  chatSocket.onclose = function() {
+    sendButton.disabled = true;
+  };
+
+  chatForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const message = messageInput.value.trim();
+    if (!message || chatSocket.readyState !== WebSocket.OPEN) return;
+
+    chatSocket.send(JSON.stringify({ message }));
+    messageInput.value = "";
+  });
+
+  messageInput.addEventListener("keydown", function(event) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      chatForm.requestSubmit();
+    }
+  });
+</script>
 {% endblock %}

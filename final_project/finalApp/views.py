@@ -42,11 +42,18 @@ def club_hub(request, club_slug):
         slug=club_slug,
     )
 
+    club_messages = active_club.messages.select_related("author").order_by("timestamp")
+
     return render(
         request,
         "club_hub.html",
-        app_context(request, active_club=active_club),
+        app_context(
+            request,
+            active_club=active_club,
+            club_messages=club_messages,
+        ),
     )
+
 
 
 def register(request):
