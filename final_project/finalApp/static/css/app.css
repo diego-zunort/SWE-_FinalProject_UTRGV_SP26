@@ -615,6 +615,9 @@ a {
 
 .message-body {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .message-meta {
@@ -670,7 +673,6 @@ a {
 
 .message-grid,
 .profile-grid,
-.match-layout,
 .hub-grid {
   display: grid;
   gap: 14px;
@@ -807,23 +809,29 @@ a {
 }
 
 .match-layout {
-  grid-template-columns: minmax(300px, 0.9fr) minmax(300px, 1.1fr);
-  align-items: stretch;
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    height: auto;
+    min-height: 650px;
+    align-items: stretch;
 }
 
 .match-card {
-  overflow: hidden;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
 }
 
 .match-cover {
-  display: grid;
-  place-items: center;
-  aspect-ratio: 16 / 10;
-  min-height: 240px;
-  color: #21050c;
-  background:
-    linear-gradient(145deg, rgba(240, 80, 35, 0.9), rgba(46, 211, 183, 0.7)),
-    url("../images/utrgv-ed.jpg") center / cover;
+    flex: 1;
+    min-height: 0;
+    max-height: 400px;
+    background:
+        linear-gradient(145deg, rgba(240, 80, 35, 0.9), rgba(46, 211, 183, 0.7)),
+        url("../images/utrgv-ed.jpg") center / cover;
 }
 
 .match-cover span {
@@ -840,12 +848,18 @@ a {
 }
 
 .match-card-body {
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 1rem;
+    gap: 0.75rem;
+    flex: 1;
     align-items: center;
     text-align: center;
+}
+
+.match-card-body h2 {
+    font-size: 24px;
+    margin: auto 0;
 }
 
 .match-card-body p {
@@ -856,10 +870,11 @@ a {
 
 .match-actions {
     display: flex;
-    gap: 0.5rem;
+    gap: 1rem;
     justify-content: center;
     align-items: center;
     width: 100%;
+    margin-top: auto;
 }
 
 .match-actions form {
@@ -872,9 +887,11 @@ a {
 }
 
 .match-action {
-  min-height: 42px;
-  padding: 0 12px;
-  font-weight: 800;
+    min-height: 52px;
+    padding: 0 3rem;
+    font-weight: 800;
+    font-size: 16px;
+    width: 160px;
 }
 
 .match-action.skip:hover {
@@ -895,19 +912,26 @@ a {
 }
 
 .club-info-panel {
-  display: grid;
-  align-content: start;
-  gap: 14px;
-  padding: 18px;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    align-self: stretch;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
 }
 
 .info-row {
-  display: grid;
-  grid-template-columns: 136px minmax(0, 1fr);
-  gap: 14px;
-  padding: 14px 0;
-  border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 136px minmax(0, 1fr);
+    gap: 14px;
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+    flex: 1;
+    align-items: center;
 }
+
 
 .info-row strong {
   color: #fff;
@@ -1321,6 +1345,25 @@ a {
   }
 }
 
+.conversation-scroll {
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 20px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px 0 18px;
+  flex: 1;
+}
+
 @media (max-width: 720px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -1338,15 +1381,6 @@ a {
   .channel-tabs {
     padding: 0 12px;
     overflow-x: auto;
-  }
-
-  .conversation-scroll {
-    padding: 12px 14px 16px;
-  }
-
-  .message {
-    grid-template-columns: 34px minmax(0, 1fr);
-    gap: 10px;
   }
 
   .message-avatar {
