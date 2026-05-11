@@ -30,5 +30,6 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='login.html', redirect_authenticated_user=True), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('join/<int:club_id>/', views.join_club, name='join_club'),
-    path('skip/<int:club_id>/', views.skip_club,name='skip_club')
+    path('skip/<int:club_id>/', views.skip_club,name='skip_club'),
+    path('leave/<int:club_id>/', views.leave_club, name='leave_club')
 ]

@@ -79,7 +79,7 @@ def profile(request):
         form = ProfileForm(request.POST, instance=profile)
         if form.is_valid():
             profile_instance = form.save(commit=False)
-            interests_list = form.cleaned_data['interests']
+            interests_list = form.cleaned_data.get('interests', [])
             profile_instance.interests = ', '.join(interests_list)
             profile_instance.save()
             return redirect('home')
@@ -96,6 +96,12 @@ def join_club(request, club_id):
     return redirect('club_hub',club_slug = club.slug)
 
 @login_required
+def leave_club(request, club_id):
+    club = get_object_or_404(Club, id = club_id)
+    ClubMembership.objects.filter(user=request.user, club=club).delete()
+    return redirect('home')
+
+@login_required
 def skip_club(request,club_id):
     joined_clubs = ClubMembership.objects.filter(user=request.user).values_list('club_id',flat = True)
     club = Club.objects.exclude(id=club_id).exclude(id__in = joined_clubs).order_by('?').first()
@@ -103,7 +109,7 @@ def skip_club(request,club_id):
 
 @login_required
 def club_match(request):
-    profile = Profile.objects.get(user=request.user) #gets current logged in user
+    profile, _ = Profile.objects.get_or_create(user=request.user , defaults= {"student_id":0}) #gets current logged in user
     user_interests = profile.interests.split(', ') if profile.interests else []
     user_major = profile.major if profile.major else ''
     #get user interests + major

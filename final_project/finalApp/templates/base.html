@@ -92,14 +92,13 @@
               </div>
             </div>
             <div class="channel-actions">
-              {% block channel_actions %}
-              <span class="member-stack" aria-label="Active members">
-                <span>RA</span>
-                <span>DZ</span>
-                <span>JL</span>
-              </span>
-              <button type="button">Invite</button>
-              {% endblock %}
+              {% block channel_actions %}{% endblock %}
+                  {% if active_club %}
+                    <form method="post" action="{% url 'leave_club' active_club.id %}">
+                        {% csrf_token %}
+                        <button class="channel-actions leave" type="submit">Leave</button>
+                    </form>
+                  {% endif %}
             </div>
           </header>
 
