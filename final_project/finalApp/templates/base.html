@@ -16,7 +16,7 @@
             <a class="workspace-logo" href="{% url 'home' %}" aria-label="Venture home">V</a>
             <div>
               <strong>Venture</strong>
-              <span>UTRGV student hub</span>
+              <span>UTRGV Student Hub</span>
             </div>
             <span class="workspace-caret">v</span>
           </div>
@@ -30,13 +30,13 @@
               </span>
             </a>
             <a class="sidebar-link sidebar-simple {% block nav_home_class %}{% endblock %}" href="{% url 'home' %}">
-              <span>general</span>
+              <span>General</span>
             </a>
             <a class="sidebar-link sidebar-simple" href="{% url 'home' %}">
-              <span>events</span>
+              <span>Events</span>
             </a>
             <a class="sidebar-link sidebar-simple {% block nav_profile_class %}{% endblock %}" href="{% url 'profile' %}">
-              <span>profile</span>
+              <span>Profile</span>
             </a>
           </nav>
 
@@ -92,14 +92,13 @@
               </div>
             </div>
             <div class="channel-actions">
-              {% block channel_actions %}
-              <span class="member-stack" aria-label="Active members">
-                <span>RA</span>
-                <span>DZ</span>
-                <span>JL</span>
-              </span>
-              <button type="button">Invite</button>
-              {% endblock %}
+              {% block channel_actions %}{% endblock %}
+                  {% if active_club %}
+                    <form method="post" action="{% url 'leave_club' active_club.id %}">
+                        {% csrf_token %}
+                        <button class="channel-actions leave" type="submit">Leave</button>
+                    </form>
+                  {% endif %}
             </div>
           </header>
 

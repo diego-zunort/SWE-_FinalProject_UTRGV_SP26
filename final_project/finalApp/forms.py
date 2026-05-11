@@ -28,7 +28,6 @@ class ProfileForm(forms.ModelForm):
         ('Social','Social'),
         ('Astronomy','Astronomy'),
         ('Intramural','Intramural'),
-        ('Social','Social'),
         ('Environment','Environment'),
         ('Science','Science')
     ]

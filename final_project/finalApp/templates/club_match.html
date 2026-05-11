@@ -5,8 +5,12 @@
 {% block nav_match_class %}is-active{% endblock %}
 {% block channel_name %}club-match{% endblock %}
 {% block channel_subtitle %}Swipe-style recommendations inside the Venture workspace{% endblock %}
+{% block composer_placeholder %}{% endblock %}
+{% block channel_actions %}{% endblock %}
+{% block composer %}{% endblock %}
 
 {% block content %}
+ {% if club  %}
   <div class="date-divider"><span>Recommended For You</span></div>
 
   <article class="message">
@@ -17,7 +21,7 @@
         <time>Now</time>
       </div>
       <p>
-        This club lines up with interests in technology, teamwork, and project-based learning.
+        
       </p>
 
       <div class="match-layout">
@@ -71,6 +75,15 @@
       </div>
     </div>
   </article>
+  {% else %}
+    <div class="date-divider"><span>You're all caught up!</span></div>
+    <article class="message">
+      <div class="message-avatar is-bot">V</div>
+      <div class="message-body">
+        <p>You've joined all available clubs or no clubs match your interests yet. Check back later!</p>
+      </div>
+    </article>
+    {% endif %}
 {% endblock %}
 
 {% block extra_scripts %}

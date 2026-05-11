@@ -79,12 +79,13 @@ def profile(request):
         form = ProfileForm(request.POST, instance=profile)
         if form.is_valid():
             profile_instance = form.save(commit=False)
-            interests_list = form.cleaned_data['interests']
+            interests_list = form.cleaned_data.get('interests', [])
             profile_instance.interests = ', '.join(interests_list)
             profile_instance.save()
             return redirect('home')
     else:
-        form = ProfileForm(instance=profile)
+        saved_interests = profile.interests.split(', ') if profile.interests else []
+        form =  ProfileForm(instance=profile, initial={'interests': saved_interests})
     
     return render(request, "profile.html", app_context(request, profile=profile, form=form))
 
@@ -95,6 +96,39 @@ def join_club(request, club_id):
     return redirect('club_hub',club_slug = club.slug)
 
 @login_required
+def leave_club(request, club_id):
+    club = get_object_or_404(Club, id = club_id)
+    ClubMembership.objects.filter(user=request.user, club=club).delete()
+    return redirect('home')
+
+@login_required
 def skip_club(request,club_id):
-    club = Club.objects.exclude(id=club_id).order_by('?').first()
+    joined_clubs = ClubMembership.objects.filter(user=request.user).values_list('club_id',flat = True)
+    club = Club.objects.exclude(id=club_id).exclude(id__in = joined_clubs).order_by('?').first()
     return render(request, 'club_match.html', app_context(request, club=club))
+
+@login_required
+def club_match(request):
+    profile, _ = Profile.objects.get_or_create(user=request.user , defaults= {"student_id":0}) #gets current logged in user
+    user_interests = profile.interests.split(', ') if profile.interests else []
+    user_major = profile.major if profile.major else ''
+    #get user interests + major
+
+    #gets all clubs already joined for user
+    #returns them by id
+    joined_clubs = ClubMembership.objects.filter(user=request.user).values_list('club_id',flat = True)
+    #excludes clubs already joined from search by checkking list
+    #__in djangos way to lookup by types
+    available_clubs = Club.objects.exclude(id__in = joined_clubs)
+    matched_club = None
+    # compare users major + interests with club's categorys and tags to see if possible match
+    for club in available_clubs:
+        if (user_major in [club.category, club.tag1, club.tag2] or any(interest in [club.category,club.tag1,club.tag2] for interest in user_interests)):
+            matched_club = club
+            break
+    #if no matches in db then display random club
+    if not matched_club:
+        matched_club = available_clubs.order_by('?').first()
+
+    return render(request, 'club_match.html',app_context(request,club=matched_club))
+    
