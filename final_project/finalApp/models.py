@@ -104,14 +104,11 @@ class Event(models.Model):
 		return self.name
 	
 class ChatMessage(models.Model):
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="messages")
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
 
-	club = models.CharField(max_length=100)
-	author = models.CharField(max_length=100)
-	message = models.TextField()
-	timestamp = models.CharField(max_length=100)
-
-	def __str__(self):
-		return self.name
 
 @receiver(post_save,sender=User)
 def create_profile(sender, instance, created, **kwargs):
