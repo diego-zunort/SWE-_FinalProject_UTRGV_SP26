@@ -1,1 +1,1 @@
-Django==6.0.3
+-r final_project/requirements.txt

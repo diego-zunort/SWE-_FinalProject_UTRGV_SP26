@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Venture | Events{% endblock %}
+{% block nav_events_class %}is-active{% endblock %}
+{% block channel_name %}Events{% endblock %}
+{% block channel_subtitle %}Your club schedule in one place{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" />
+{% endblock %}
+
+{% block content %}
+  <section class="panel">
+    <p class="panel-kicker">Calendar</p>
+    <h2>Club Events</h2>
+    <div id="club-calendar" class="club-calendar"></div>
+  </section>
+{% endblock %}
+
+{% block composer %}{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script>
+  window.VENTURE_EVENTS_FEED_URL = "{% url 'my_events_feed' %}";
+</script>
+<script src="{% static 'js/calendar.js' %}"></script>
+{% endblock %}

@@ -2,18 +2,42 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
+from django.db.models import Q
+from datetime import timedelta
+from django.urls import reverse
 
-from .models import Club, Profile, ClubMembership, ChatMessage
+from .models import Club, Profile, ClubMembership, ChatMessage, Event
 from .forms import EventForm, ProfileForm
 
 def app_context(request, **extra):
     if request.user.is_authenticated:
         club_spaces = Club.objects.filter(memberships__user=request.user).order_by("name")
+        upcoming_events = (
+            Event.objects.filter(club__memberships__user=request.user, start_time__gte=timezone.now())
+            .select_related("club")
+            .order_by("start_time")
+        )[:5]
+
+        today = timezone.localdate()
+        week_start = today - timedelta(days=(today.weekday() + 1) % 7)
+        mini_calendar_days = [week_start + timedelta(days=offset) for offset in range(7)]
     else:
         club_spaces = Club.objects.none()
+        upcoming_events = Event.objects.none()
+        mini_calendar_days = []
+        today = timezone.localdate()
 
-    context = {"club_spaces": club_spaces}
+    context = {
+        "club_spaces": club_spaces,
+        "upcoming_events": upcoming_events,
+        "mini_calendar_days": mini_calendar_days,
+        "mini_calendar_today": today,
+        "mini_calendar_month_label": today.strftime("%B"),
+    }
     context.update(extra)
     return context
 
@@ -58,6 +82,62 @@ def home(request):
         club = None
     ).order_by('timestamp')
     return render(request, 'home.html', app_context(request, next_match=next_match, recent_club = recent_club,general_messages=general_messages))
+
+
+@login_required
+def calendar(request):
+    return render(request, "calendar.html", app_context(request))
+
+
+@login_required
+def calendar_redirect(request):
+    return redirect("calendar")
+
+
+@login_required
+def my_events_feed(request):
+    start = parse_datetime(request.GET.get("start") or "")
+    end = parse_datetime(request.GET.get("end") or "")
+    if not start or not end:
+        return JsonResponse({"detail": "Missing start/end query params."}, status=400)
+
+    if timezone.is_naive(start):
+        start = timezone.make_aware(start, timezone.get_current_timezone())
+    if timezone.is_naive(end):
+        end = timezone.make_aware(end, timezone.get_current_timezone())
+
+    events = (
+        Event.objects.filter(
+            club__memberships__user=request.user,
+        )
+        .filter(
+            Q(end_time__isnull=True, start_time__gte=start, start_time__lt=end)
+            | Q(end_time__gt=start, start_time__lt=end)
+        )
+        .select_related("club")
+        .order_by("start_time")
+    )
+
+    payload = []
+    for event in events:
+        if not event.club:
+            continue
+        payload.append(
+            {
+                "id": event.pk,
+                "title": event.title,
+                "start": event.start_time.isoformat(),
+                "end": event.end_time.isoformat() if event.end_time else None,
+                "url": f"{reverse('club_hub', kwargs={'club_slug': event.club.slug})}?tab=events",
+                "extendedProps": {
+                    "club": event.club.name if event.club else "",
+                    "location": event.location,
+                    "requirements": event.requirements,
+                },
+            }
+        )
+
+    return JsonResponse(payload, safe=False)
 
 @login_required
 def club_match(request):
@@ -180,4 +260,3 @@ def club_match(request):
     club = get_next_match(request.user)
     return render(request, 'club_match.html',app_context(request,club=club))
     
-

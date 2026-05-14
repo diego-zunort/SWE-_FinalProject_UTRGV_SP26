@@ -258,6 +258,36 @@ a {
   text-transform: uppercase;
 }
 
+.club-calendar {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.club-calendar .fc {
+  --fc-page-bg-color: transparent;
+  --fc-border-color: rgba(255, 255, 255, 0.12);
+  --fc-neutral-bg-color: rgba(255, 255, 255, 0.05);
+  --fc-today-bg-color: rgba(46, 211, 183, 0.12);
+  --fc-button-bg-color: rgba(255, 255, 255, 0.08);
+  --fc-button-border-color: rgba(255, 255, 255, 0.12);
+  --fc-button-text-color: #fff;
+  --fc-button-hover-bg-color: rgba(255, 255, 255, 0.16);
+  --fc-button-hover-border-color: rgba(255, 255, 255, 0.18);
+  --fc-button-active-bg-color: rgba(197, 26, 74, 0.75);
+  --fc-button-active-border-color: rgba(197, 26, 74, 0.85);
+  --fc-event-bg-color: rgba(46, 211, 183, 0.85);
+  --fc-event-border-color: rgba(46, 211, 183, 0.95);
+  --fc-event-text-color: #071f1b;
+  color: var(--text);
+}
+
+.club-calendar .fc a {
+  color: inherit;
+}
+
 .match-feature-link strong,
 .match-feature-link em {
   display: block;
