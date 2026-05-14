@@ -7,7 +7,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.db.models import Q
-from datetime import timedelta
 from django.urls import reverse
 
 from .models import Club, Profile, ClubMembership, ChatMessage, Event
@@ -16,30 +15,20 @@ from .forms import EventForm, ProfileForm
 def app_context(request, **extra):
     if request.user.is_authenticated:
         club_spaces = Club.objects.filter(memberships__user=request.user).order_by("name")
-        upcoming_events = (
-            Event.objects.filter(club__memberships__user=request.user, start_time__gte=timezone.now())
-            .select_related("club")
-            .order_by("start_time")
-        )[:5]
-
-        today = timezone.localdate()
-        week_start = today - timedelta(days=(today.weekday() + 1) % 7)
-        mini_calendar_days = [week_start + timedelta(days=offset) for offset in range(7)]
     else:
         club_spaces = Club.objects.none()
-        upcoming_events = Event.objects.none()
-        mini_calendar_days = []
-        today = timezone.localdate()
 
-    context = {
-        "club_spaces": club_spaces,
-        "upcoming_events": upcoming_events,
-        "mini_calendar_days": mini_calendar_days,
-        "mini_calendar_today": today,
-        "mini_calendar_month_label": today.strftime("%B"),
-    }
+    context = {"club_spaces": club_spaces}
     context.update(extra)
     return context
+
+
+def get_upcoming_events(user, limit=8):
+    return (
+        Event.objects.filter(club__memberships__user=user, start_time__gte=timezone.now())
+        .select_related("club")
+        .order_by("start_time")[:limit]
+    )
 
 
 def build_register_form(data=None):
@@ -86,7 +75,11 @@ def home(request):
 
 @login_required
 def calendar(request):
-    return render(request, "calendar.html", app_context(request))
+    return render(
+        request,
+        "calendar.html",
+        app_context(request, upcoming_events=get_upcoming_events(request.user)),
+    )
 
 
 @login_required
@@ -138,12 +131,6 @@ def my_events_feed(request):
         )
 
     return JsonResponse(payload, safe=False)
-
-@login_required
-def club_match(request):
-    club = Club.objects.order_by('?').first()
-    return render(request, 'club_match.html', app_context(request, club=club))
-
 
 @login_required
 def club_hub(request, club_slug):
@@ -257,6 +244,24 @@ def skip_club(request,club_id):
 
 @login_required
 def club_match(request):
-    club = get_next_match(request.user)
-    return render(request, 'club_match.html',app_context(request,club=club))
-    
+    match_tab = request.GET.get("tab", "explore")
+    if match_tab not in {"explore", "all_clubs"}:
+        match_tab = "explore"
+
+    joined_club_ids = list(
+        ClubMembership.objects.filter(user=request.user).values_list("club_id", flat=True)
+    )
+    club = get_next_match(request.user) if match_tab == "explore" else None
+    all_clubs = Club.objects.order_by("name") if match_tab == "all_clubs" else Club.objects.none()
+
+    return render(
+        request,
+        "club_match.html",
+        app_context(
+            request,
+            club=club,
+            all_clubs=all_clubs,
+            joined_club_ids=joined_club_ids,
+            match_tab=match_tab,
+        ),
+    )

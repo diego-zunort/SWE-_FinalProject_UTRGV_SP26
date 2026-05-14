@@ -5,8 +5,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Venture{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/app.css' %}" />
     {% block extra_head %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/app.css' %}?v=calendar-layout-3" />
   </head>
   <body class="app-body">
     <div class="app-window">
@@ -121,52 +121,6 @@
           {% endblock %}
         </main>
 
-        <aside class="events-sidebar" aria-label="Calendar and club events">
-          <header class="events-header">
-            <h2>{{ mini_calendar_month_label }}</h2>
-            <div class="events-header-actions" aria-hidden="true">
-              <span>+</span>
-              <span>...</span>
-            </div>
-          </header>
-
-          <section class="mini-calendar" aria-label="May calendar">
-            <div class="calendar-weekdays" aria-hidden="true">
-              <span>S</span>
-              <span>M</span>
-              <span>T</span>
-              <span>W</span>
-              <span>T</span>
-              <span>F</span>
-              <span>S</span>
-            </div>
-            <div class="calendar-days">
-              {% for day in mini_calendar_days %}
-                <a href="{% url 'calendar' %}" class="calendar-day {% if day == mini_calendar_today %}is-today{% endif %}">{{ day|date:"j" }}</a>
-              {% endfor %}
-            </div>
-          </section>
-
-          <section class="agenda" aria-label="Upcoming club events">
-            <div class="agenda-section">
-              <h3>Upcoming</h3>
-              {% for event in upcoming_events %}
-                <article class="agenda-event">
-                  <time>
-                    {{ event.start_time|date:"g:i A" }}
-                    <span>{{ event.start_time|date:"M j" }}</span>
-                  </time>
-                  <div class="agenda-event-card accent-teal">
-                    <strong>{{ event.title }}</strong>
-                    <span>{{ event.club.name }}</span>
-                  </div>
-                </article>
-              {% empty %}
-                <p class="empty-agenda">No upcoming events scheduled</p>
-              {% endfor %}
-            </div>
-          </section>
-        </aside>
       </div>
     </div>
     {% block extra_scripts %}{% endblock %}

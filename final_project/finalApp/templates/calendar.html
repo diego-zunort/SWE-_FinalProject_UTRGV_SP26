@@ -5,16 +5,66 @@
 {% block nav_events_class %}is-active{% endblock %}
 {% block channel_name %}Events{% endblock %}
 {% block channel_subtitle %}Your club schedule in one place{% endblock %}
+{% block channel_tabs %}{% endblock %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" />
 {% endblock %}
 
 {% block content %}
-  <section class="panel">
-    <p class="panel-kicker">Calendar</p>
-    <h2>Club Events</h2>
-    <div id="club-calendar" class="club-calendar"></div>
+  <section class="calendar-page">
+    <div class="calendar-hero">
+      <div>
+        <p class="panel-kicker">Club Calendar</p>
+        <h2>Events</h2>
+        <p>Meetings, socials, and deadlines from the clubs you joined.</p>
+      </div>
+      <div class="calendar-stat">
+        <strong>{{ upcoming_events|length }}</strong>
+        <span>Upcoming</span>
+      </div>
+    </div>
+
+    <div class="calendar-layout">
+      <section class="calendar-panel" aria-label="Club events calendar">
+        <div class="calendar-panel-header">
+          <div>
+            <p class="panel-kicker">Schedule</p>
+            <h2>Month View</h2>
+          </div>
+        </div>
+        <div id="club-calendar" class="club-calendar"></div>
+      </section>
+
+      <aside class="calendar-agenda-panel" aria-label="Upcoming events">
+        <div class="calendar-panel-header">
+          <div>
+            <p class="panel-kicker">Next Up</p>
+            <h2>Upcoming Events</h2>
+          </div>
+        </div>
+
+        <div class="calendar-agenda-list">
+          {% for event in upcoming_events %}
+            <a class="calendar-agenda-item" href="{% url 'club_hub' event.club.slug %}?tab=events">
+              <time datetime="{{ event.start_time|date:'c' }}">
+                <strong>{{ event.start_time|date:"M j" }}</strong>
+                <span>{{ event.start_time|date:"g:i A" }}</span>
+              </time>
+              <div>
+                <h3>{{ event.title }}</h3>
+                <p>{{ event.club.name }}</p>
+                {% if event.location %}
+                  <span>{{ event.location }}</span>
+                {% endif %}
+              </div>
+            </a>
+          {% empty %}
+            <p class="calendar-empty">No upcoming events scheduled.</p>
+          {% endfor %}
+        </div>
+      </aside>
+    </div>
   </section>
 {% endblock %}
 
