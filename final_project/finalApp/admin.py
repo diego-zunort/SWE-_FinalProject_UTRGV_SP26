@@ -3,7 +3,7 @@ from .models import Club, ClubMembership, Profile, Event, ChatMessage
 
 @admin.register(Club)
 class ClubAdmin(admin.ModelAdmin):
-    list_display = ("name", "category", "meetTimes", "emailContact")
+    list_display = ("name", "category", "meetTimes", "emailContact", "image")
     search_fields = ("name", "desc", "category", "tag1", "tag2")
     list_filter = ("category",)
 

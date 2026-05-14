@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 from finalApp import views
 
@@ -33,3 +35,6 @@ urlpatterns = [
     path('skip/<int:club_id>/', views.skip_club,name='skip_club'),
     path('leave/<int:club_id>/', views.leave_club, name='leave_club')
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
