@@ -98,7 +98,7 @@ class ClubMembership(models.Model):
 class Event(models.Model):
 	"""Scheduled club activity shown on the club Events tab."""
 
-	# The FK keeps events scoped to one Discord-style club space.
+	# The FK keeps events scoped to one club space
 	club = models.ForeignKey(
 		Club,
 		on_delete=models.CASCADE,
