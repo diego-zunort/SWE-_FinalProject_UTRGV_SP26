@@ -59,11 +59,6 @@ def home(request):
     ).order_by('timestamp')
     return render(request, 'home.html', app_context(request, next_match=next_match, recent_club = recent_club,general_messages=general_messages))
 
-@login_required
-def club_match(request):
-    club = Club.objects.order_by('?').first()
-    return render(request, 'club_match.html', app_context(request, club=club))
-
 
 @login_required
 def club_hub(request, club_slug):
