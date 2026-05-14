@@ -145,7 +145,7 @@ def club_hub(request, club_slug):
         user=request.user,
         club=active_club,
     )
-    # One hub view powers both Slack-style tabs: messages and events.
+    # One hub view powers both tabs: messages and events.
     active_tab = request.GET.get("tab", "messages")
     if active_tab not in {"messages", "events"}:
         active_tab = "messages"
