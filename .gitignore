@@ -7,6 +7,7 @@ __pycache__/
 .pytest_cache/
 .coverage
 htmlcov/
+.DS_Store
 
 # Local environment
 .env
@@ -19,6 +20,9 @@ htmlcov/
 *.sqlite3-journal
 *.sqlite3-shm
 *.sqlite3-wal
+
+# Uploaded media files
+media/
 
 # prettier formatting extension
 .prettierignore

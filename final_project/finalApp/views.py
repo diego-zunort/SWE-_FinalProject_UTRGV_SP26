@@ -168,11 +168,29 @@ def leave_club(request, club_id):
 def skip_club(request,club_id):
     joined_clubs = ClubMembership.objects.filter(user=request.user).values_list('club_id',flat = True)
     club = Club.objects.exclude(id=club_id).exclude(id__in = joined_clubs).order_by('?').first()
-    return render(request, 'club_match.html', app_context(request, club=club))
+    return render(request, 'club_match.html', app_context(request, club=club, match_tab="explore"))
 
 @login_required
 def club_match(request):
-    club = get_next_match(request.user)
-    return render(request, 'club_match.html',app_context(request,club=club))
-    
+    match_tab = request.GET.get("tab", "explore")
+    if match_tab not in {"explore", "all_clubs"}:
+        match_tab = "explore"
 
+    joined_club_ids = list(
+        ClubMembership.objects.filter(user=request.user).values_list("club_id", flat=True)
+    )
+    club = get_next_match(request.user) if match_tab == "explore" else None
+    all_clubs = Club.objects.order_by("name") if match_tab == "all_clubs" else Club.objects.none()
+
+    return render(
+        request,
+        "club_match.html",
+        app_context(
+            request,
+            club=club,
+            all_clubs=all_clubs,
+            joined_club_ids=joined_club_ids,
+            match_tab=match_tab,
+        ),
+    )
+    

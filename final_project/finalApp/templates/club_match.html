@@ -4,13 +4,83 @@
 {% block title %}Venture | Club Match{% endblock %}
 {% block nav_match_class %}is-active{% endblock %}
 {% block channel_name %}club-match{% endblock %}
-{% block channel_subtitle %}Swipe-style recommendations inside the Venture workspace{% endblock %}
+{% block channel_subtitle %}
+  {% if match_tab == "all_clubs" %}
+    Browse every club in the Venture workspace
+  {% else %}
+    Swipe-style recommendations inside the Venture workspace
+  {% endif %}
+{% endblock %}
 {% block composer_placeholder %}{% endblock %}
 {% block channel_actions %}{% endblock %}
 {% block composer %}{% endblock %}
 
 {% block content %}
- {% if club  %}
+ {% if match_tab == "all_clubs" %}
+  <div class="date-divider"><span>All Clubs</span></div>
+
+  {% if all_clubs %}
+    <section class="club-directory" aria-label="All clubs">
+      {% for club_item in all_clubs %}
+        <article class="club-directory-card">
+          <div class="club-directory-header">
+            <span class="club-directory-avatar">
+              {% if club_item.image %}
+                <img src="{{ club_item.image.url }}" alt="{{ club_item.name }}" />
+              {% else %}
+                {{ club_item.initials }}
+              {% endif %}
+            </span>
+            <div class="club-directory-title">
+              <h2>{{ club_item.name }}</h2>
+              <p>{{ club_item.category|default:"General" }}</p>
+            </div>
+          </div>
+
+          <p class="club-directory-description">{{ club_item.desc|truncatewords:28 }}</p>
+
+          <div class="club-directory-meta">
+            <span>
+              <strong>Meeting</strong>
+              {{ club_item.meetTimes|default:"TBA" }}
+            </span>
+            <span>
+              <strong>Contact</strong>
+              {{ club_item.emailContact|default:"No contact listed" }}
+            </span>
+          </div>
+
+          <div class="pill-row club-directory-tags">
+            {% for tag in club_item.tag_list %}
+              <span class="status-pill">{{ tag }}</span>
+            {% empty %}
+              <span class="status-pill">General</span>
+            {% endfor %}
+          </div>
+
+          <div class="club-directory-actions">
+            {% if club_item.id in joined_club_ids %}
+              <span class="directory-status">Joined</span>
+              <a class="directory-button" href="{% url 'club_hub' club_item.slug %}">Open Hub</a>
+            {% else %}
+              <form method="POST" action="{% url 'join_club' club_item.id %}">
+                {% csrf_token %}
+                <button class="directory-button directory-button-primary" type="submit">Join Club</button>
+              </form>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </section>
+  {% else %}
+    <article class="message">
+      <div class="message-avatar is-bot">V</div>
+      <div class="message-body">
+        <p>No clubs are in the database yet.</p>
+      </div>
+    </article>
+  {% endif %}
+ {% elif club  %}
   <div class="date-divider"><span>Recommended For You</span></div>
 
   <article class="message">
@@ -27,7 +97,13 @@
       <div class="match-layout">
         <section class="match-card">
           <div class="match-cover">
-            <span>{{ club.name|slice:":2"|upper }}</span>
+            <span class="match-cover-badge">
+              {% if club.image %}
+                <img src="{{ club.image.url }}" alt="{{ club.name }}" />
+              {% else %}
+                {{ club.initials }}
+              {% endif %}
+            </span>
           </div>
           <div class="match-card-body">
             <div class="pill-row">

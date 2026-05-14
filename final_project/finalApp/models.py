@@ -20,6 +20,7 @@ class Profile(models.Model):
 class Club(models.Model):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(max_length=120, blank=True, default="")
+	image = models.ImageField(upload_to="club_images/", blank=True, null=True)
 	desc = models.TextField()
 	meetTimes = models.CharField(max_length=100)
 	category = models.CharField(max_length=100, default="General")

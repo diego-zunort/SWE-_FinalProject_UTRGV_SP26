@@ -118,22 +118,10 @@
 <!-- The following block is for the message composer form, which is included in the base template -->
 {% block composer %}
   <form class="composer chat-composer" id="chat-form" aria-label="Message composer">
-    <div class="composer-toolbar" aria-hidden="true">
-      <span>B</span>
-      <span>I</span>
-      <span>U</span>
-      <span>@</span>
-    </div>
-
     <label class="sr-only" for="message-input">Message</label>
     <textarea id="message-input" rows="2" placeholder="Message {{ active_club.channel }}"></textarea>
 
     <div class="composer-actions">
-      <div>
-        <button type="button">+</button>
-        <button type="button">Aa</button>
-        <button type="button">@</button>
-      </div>
       <button type="submit" class="send-button" disabled>Send</button>
     </div>
   </form>
