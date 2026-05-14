@@ -103,8 +103,14 @@
           </header>
 
           <nav class="channel-tabs" aria-label="Channel sections">
-            <a class="is-active" href="#">Messages</a>
-            <a href="#">Events</a>
+            {% if active_club %}
+              {# Club hubs switch between chat and events while staying in the same club space. #}
+              <a class="{% if active_tab == 'messages' %}is-active{% endif %}" href="{% url 'club_hub' active_club.slug %}">Messages</a>
+              <a class="{% if active_tab == 'events' %}is-active{% endif %}" href="{% url 'club_hub' active_club.slug %}?tab=events">Events</a>
+            {% else %}
+              <a class="is-active" href="#">Messages</a>
+              <a href="#">Events</a>
+            {% endif %}
             <a href="#">Files</a>
           </nav>
 

@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import Club, Profile, ClubMembership
-from .forms import ProfileForm
+from .forms import EventForm, ProfileForm
 
 def app_context(request, **extra):
     if request.user.is_authenticated:
@@ -37,12 +38,41 @@ def club_match(request):
 
 @login_required
 def club_hub(request, club_slug):
+    # Users can only open hub pages for clubs they have joined.
     active_club = get_object_or_404(
         Club.objects.filter(memberships__user=request.user),
         slug=club_slug,
     )
+    # The membership record also tells us whether this user can manage events.
+    membership = get_object_or_404(
+        ClubMembership,
+        user=request.user,
+        club=active_club,
+    )
+    # One hub view powers both Slack-style tabs: messages and events.
+    active_tab = request.GET.get("tab", "messages")
+    if active_tab not in {"messages", "events"}:
+        active_tab = "messages"
 
     club_messages = active_club.messages.select_related("author").order_by("timestamp")
+    club_events = active_club.events.select_related("created_by").order_by("start_time")
+    event_form = EventForm()
+
+    if request.method == "POST" and request.POST.get("action") == "create_event":
+        # Never trust the hidden form action alone; verify admin status server-side.
+        if not membership.is_admin:
+            raise PermissionDenied("Only club admins can create events.")
+
+        event_form = EventForm(request.POST)
+        active_tab = "events"
+        if event_form.is_valid():
+            event = event_form.save(commit=False)
+            # Scope the new event to the active club instead of trusting posted data.
+            event.club = active_club
+            event.created_by = request.user
+            event.save()
+            messages.success(request, "Event created.")
+            return redirect(f"{request.path}?tab=events")
 
     return render(
         request,
@@ -50,7 +80,11 @@ def club_hub(request, club_slug):
         app_context(
             request,
             active_club=active_club,
+            active_tab=active_tab,
             club_messages=club_messages,
+            club_events=club_events,
+            event_form=event_form,
+            is_club_admin=membership.is_admin,
         ),
     )
 
