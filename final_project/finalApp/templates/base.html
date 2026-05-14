@@ -103,9 +103,9 @@
           </header>
 
           <nav class="channel-tabs" aria-label="Channel sections">
+            {% block channel_tabs %}
             <a class="is-active" href="#">Messages</a>
-            <a href="#">Events</a>
-            <a href="#">Files</a>
+            {% endblock %}
           </nav>
 
           <section class="conversation-scroll">

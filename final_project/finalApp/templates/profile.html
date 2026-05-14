@@ -6,6 +6,7 @@
 {% block channel_subtitle %}Student details used for club recommendations{% endblock %}
 {% block composer_placeholder %}{% endblock %}
 {% block channel_actions %}{% endblock %}
+{% block channel_tabs %}{% endblock %}
 {% block composer %}{% endblock %}
 
 {% block content %}
@@ -18,6 +19,8 @@
         <strong>{{ request.user.username|default:"Student" }}</strong>
         <time>Profile</time>
       </div>
+      <form method="POST">
+            {% csrf_token %}
       <div class="profile-grid">
         <section class="profile-panel">
           <div class="profile-hero">
@@ -30,11 +33,11 @@
           <div class="profile-facts">
             <div class="profile-fact">
               <strong>Student ID</strong>
-              <span>{{ profile.student_id|default:"Not set" }}</span>
+              {{form.student_id}}
             </div>
             <div class="profile-fact">
               <strong>Status</strong>
-              <span>{{ profile.enrolled|yesno:"Enrolled,Not enrolled" }}</span>
+              {{form.enrolled}}
             </div>
             <div class="profile-fact">
               <strong>Workspace</strong>
@@ -49,13 +52,10 @@
           <p class="panel-kicker">Matching Signals</p>
           <h2>Preferences</h2>
           <p>These interests help shape the club recommendations shown in Club Match.</p>
-
-          <form method="POST">
-            {% csrf_token %}
             
             <div class="profile-fact">
               <strong>Major</strong>
-              {{ form.major }}
+              {{ form.major}}
             </div>
 
             <div class="profile-fact">
@@ -65,7 +65,7 @@
 
             <div class="profile-fact">
               <strong>Bio</strong>
-              {{ form.bio }}
+              {{ form.bio}}
             </div>
 
             <button type="submit" class="profile-button">Save Profile</button>
