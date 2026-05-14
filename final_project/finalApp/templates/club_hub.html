@@ -43,59 +43,179 @@
     </section>
   </div>
 
-<div class="date-divider"><span>{{ active_club.name }} Messages</span></div>
+  {% if active_tab == "events" %}
+    {# Events replace the chat stream on this tab, but still live inside the same club hub. #}
+    <div class="date-divider"><span>{{ active_club.name }} Events</span></div>
 
-<!-- dynamic chat messages container -->
-<div id="chat-messages">
-  {% for message in club_messages %}
-    <article class="message">
-      <div class="message-avatar">{{ message.author.username|slice:":2"|upper }}</div>
-      <div class="message-body">
-        <div class="message-meta">
-          <strong>{{ message.author.username }}</strong>
-          <time>{{ message.timestamp|date:"g:i A" }}</time>
+    {% if is_club_admin %}
+      {# Keep the page compact; open the full create form only when an admin needs it. #}
+      <section class="event-admin-bar">
+        <div>
+          <p class="panel-kicker">Club Admin</p>
+          <h2>Manage Events</h2>
         </div>
-        <p>{{ message.message }}</p>
-      </div>
-    </article>
-  {% empty %}
-    <article class="message" id="empty-chat-message">
-      <div class="message-avatar is-bot">V</div>
-      <div class="message-body">
-        <p>No messages yet. Start the conversation.</p>
-      </div>
-    </article>
-  {% endfor %}
-</div>
+        <button class="profile-button event-open-button" type="button" data-event-dialog-open>
+          <span aria-hidden="true">+</span>
+          Create event
+        </button>
+      </section>
+
+      <dialog class="event-dialog" aria-labelledby="event-dialog-title" {% if event_form.errors %}data-open-on-load="true"{% endif %}>
+        <section class="event-create-panel">
+          <div class="event-create-header">
+            <div>
+              <p class="panel-kicker">Club Admin</p>
+              <h2 id="event-dialog-title">Create Event</h2>
+            </div>
+            <button class="event-dialog-close" type="button" aria-label="Close create event dialog" data-event-dialog-close>
+              x
+            </button>
+          </div>
+          <form class="event-form" method="post" action="{% url 'club_hub' active_club.slug %}?tab=events">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create_event" />
+            <div class="event-form-grid">
+              {% for field in event_form %}
+                <label class="event-form-field event-field-{{ field.name }}" for="{{ field.id_for_label }}">
+                  <span>{{ field.label }}</span>
+                  {{ field }}
+                  {% for error in field.errors %}
+                    <em>{{ error }}</em>
+                  {% endfor %}
+                </label>
+              {% endfor %}
+            </div>
+            {% if event_form.non_field_errors %}
+              <div class="form-errors">{{ event_form.non_field_errors }}</div>
+            {% endif %}
+            <div class="event-form-footer">
+              <button class="event-secondary-button" type="button" data-event-dialog-close>Cancel</button>
+              <button class="profile-button event-submit" type="submit">Create event</button>
+            </div>
+          </form>
+        </section>
+      </dialog>
+    {% endif %}
+
+    <section class="event-list">
+      {% for event in club_events %}
+        <article class="event-card">
+          <time datetime="{{ event.start_time|date:'c' }}">
+            <strong>{{ event.start_time|date:"M j" }}</strong>
+            <span>{{ event.start_time|date:"g:i A" }}</span>
+          </time>
+          <div class="event-card-content">
+            <h2>{{ event.title }}</h2>
+            {% if event.location %}
+              <p class="event-location">{{ event.location }}</p>
+            {% endif %}
+            {% if event.description %}
+              <p>{{ event.description }}</p>
+            {% endif %}
+            {% if event.requirements %}
+              <span class="status-pill event-requirements">{{ event.requirements }}</span>
+            {% endif %}
+          </div>
+        </article>
+      {% empty %}
+        <article class="message">
+          <div class="message-avatar is-bot">V</div>
+          <div class="message-body">
+            <p>No events scheduled yet.</p>
+          </div>
+        </article>
+      {% endfor %}
+    </section>
+  {% else %}
+    <div class="date-divider"><span>{{ active_club.name }} Messages</span></div>
+
+    <div id="chat-messages">
+      {% for message in club_messages %}
+        <article class="message">
+          <div class="message-avatar">{{ message.author.username|slice:":2"|upper }}</div>
+          <div class="message-body">
+            <div class="message-meta">
+              <strong>{{ message.author.username }}</strong>
+              <time>{{ message.timestamp|date:"M j, Y g:i A" }}</time>
+            </div>
+            <p>{{ message.message }}</p>
+          </div>
+        </article>
+      {% empty %}
+        <article class="message" id="empty-chat-message">
+          <div class="message-avatar is-bot">V</div>
+          <div class="message-body">
+            <p>No messages yet. Start the conversation.</p>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% endif %}
 
 
 {% endblock %}
 <!-- The following block is for the message composer form, which is included in the base template -->
 {% block composer %}
-  <form class="composer chat-composer" id="chat-form" aria-label="Message composer">
-    <div class="composer-toolbar" aria-hidden="true">
-      <span>B</span>
-      <span>I</span>
-      <span>U</span>
-      <span>@</span>
-    </div>
-
-    <label class="sr-only" for="message-input">Message</label>
-    <textarea id="message-input" rows="2" placeholder="Message {{ active_club.channel }}"></textarea>
-
-    <div class="composer-actions">
-      <div>
-        <button type="button">+</button>
-        <button type="button">Aa</button>
-        <button type="button">@</button>
+  {% if active_tab != "events" %}
+    <form class="composer chat-composer" id="chat-form" aria-label="Message composer">
+      <div class="composer-toolbar" aria-hidden="true">
+        <span>B</span>
+        <span>I</span>
+        <span>U</span>
+        <span>@</span>
       </div>
-      <button type="submit" class="send-button" disabled>Send</button>
-    </div>
-  </form>
+
+      <label class="sr-only" for="message-input">Message</label>
+      <textarea id="message-input" rows="2" placeholder="Message {{ active_club.channel }}"></textarea>
+
+      <div class="composer-actions">
+        <div>
+          <button type="button">+</button>
+          <button type="button">Aa</button>
+          <button type="button">@</button>
+        </div>
+        <button type="submit" class="send-button" disabled>Send</button>
+      </div>
+    </form>
+  {% endif %}
 {% endblock %}
 
 <!-- JavaScript for handling WebSocket connections and real-time chat updates -->
 {% block extra_scripts %}
+{% if active_tab == "events" and is_club_admin %}
+<script>
+  const eventDialog = document.querySelector(".event-dialog");
+  const openEventDialogButton = document.querySelector("[data-event-dialog-open]");
+  const closeEventDialogButtons = document.querySelectorAll("[data-event-dialog-close]");
+
+  if (eventDialog && openEventDialogButton) {
+    // Native dialog keeps focus handling and Escape-to-close behavior for the modal.
+    const openEventDialog = () => {
+      if (typeof eventDialog.showModal === "function") {
+        eventDialog.showModal();
+      }
+    };
+
+    openEventDialogButton.addEventListener("click", openEventDialog);
+
+    closeEventDialogButtons.forEach((button) => {
+      button.addEventListener("click", () => eventDialog.close());
+    });
+
+    eventDialog.addEventListener("click", (event) => {
+      if (event.target === eventDialog) {
+        eventDialog.close();
+      }
+    });
+
+    if (eventDialog.dataset.openOnLoad === "true") {
+      // Reopen after a failed POST so validation errors are visible to the admin.
+      openEventDialog();
+    }
+  }
+</script>
+{% endif %}
+{% if active_tab != "events" %}
 <script>
   const clubSlug = "{{ active_club.slug|escapejs }}";
   const scheme = window.location.protocol === "https:" ? "wss" : "ws";
@@ -155,7 +275,7 @@
   };
 
   chatSocket.onclose = function() {
-    sendButton.disabled = true;
+    console.log("Chat socket closed!")
   };
 
   chatForm.addEventListener("submit", function(event) {
@@ -175,4 +295,5 @@
     }
   });
 </script>
+{% endif %}
 {% endblock %}

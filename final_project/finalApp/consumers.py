@@ -3,6 +3,8 @@ from json import JSONDecodeError
 
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.utils import timezone
+
 from .models import Club, ChatMessage
 
 class GeneralChatConsumer(AsyncWebsocketConsumer):
@@ -160,7 +162,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             author_id=self.user.id,
             message=message,
         )
+        local_timestamp = timezone.localtime(chat_message.timestamp)
+
         return {
             "message": chat_message.message,
-            "timestamp": chat_message.timestamp.strftime("%I:%M %p").lstrip("0"),
+            "timestamp": local_timestamp.strftime("%b %d, %Y %I:%M %p"),
         }

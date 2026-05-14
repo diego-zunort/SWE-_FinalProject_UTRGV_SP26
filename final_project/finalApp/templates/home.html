@@ -197,7 +197,9 @@
     addMessage(data.author, data.message, data.timestamp);
   };
 
-
+  chatSocket.onclose = function() {
+    sendButton.disabled = true;
+  };
 
   chatForm.addEventListener("submit", function(event) {
     event.preventDefault();
