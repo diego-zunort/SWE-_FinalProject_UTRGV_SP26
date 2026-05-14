@@ -9,7 +9,13 @@
 
 {% block content %}
   <section class="hub-hero">
-    <div class="hub-server-avatar {{ active_club.dot_class }}">{{ active_club.initials }}</div>
+    <div class="hub-server-avatar {{ active_club.dot_class }}">
+      {% if active_club.image %}
+        <img src="{{ active_club.image.url }}" alt="{{ active_club.name }}" />
+      {% else %}
+        {{ active_club.initials }}
+      {% endif %}
+    </div>
     <div>
       <p class="panel-kicker">Club Hub</p>
       <h2>{{ active_club.name }}</h2>
@@ -158,22 +164,10 @@
 {% block composer %}
   {% if active_tab != "events" %}
     <form class="composer chat-composer" id="chat-form" aria-label="Message composer">
-      <div class="composer-toolbar" aria-hidden="true">
-        <span>B</span>
-        <span>I</span>
-        <span>U</span>
-        <span>@</span>
-      </div>
-
       <label class="sr-only" for="message-input">Message</label>
       <textarea id="message-input" rows="2" placeholder="Message {{ active_club.channel }}"></textarea>
 
       <div class="composer-actions">
-        <div>
-          <button type="button">+</button>
-          <button type="button">Aa</button>
-          <button type="button">@</button>
-        </div>
         <button type="submit" class="send-button" disabled>Send</button>
       </div>
     </form>

@@ -51,7 +51,13 @@
                   class="sidebar-link club-space-link {% if active_club.slug == club_space.slug %}is-active{% endif %}"
                   href="{% url 'club_hub' club_space.slug %}"
                 >
-                  <span class="server-avatar {{ club_space.dot_class }}">{{ club_space.initials }}</span>
+                  <span class="server-avatar {{ club_space.dot_class }}">
+                    {% if club_space.image %}
+                      <img src="{{ club_space.image.url }}" alt="{{ club_space.name }}" />
+                    {% else %}
+                      {{ club_space.initials }}
+                    {% endif %}
+                  </span>
                   <span>{{ club_space.name }}</span>
                 </a>
               {% empty %}
@@ -59,22 +65,6 @@
               {% endfor %}
             </div>
           </details>
-
-          <section class="sidebar-section">
-            <h2>Direct Messages</h2>
-            <a class="sidebar-link muted" href="{% url 'profile' %}">
-              <span class="avatar-mini">RA</span>
-              <span>{{ request.user.username|default:"Rafael" }}</span>
-            </a>
-            <a class="sidebar-link muted" href="{% url 'home' %}">
-              <span class="avatar-mini">DZ</span>
-              <span>Diego</span>
-            </a>
-            <a class="sidebar-link muted" href="{% url 'home' %}">
-              <span class="avatar-mini">JL</span>
-              <span>Javier</span>
-            </a>
-          </section>
 
           <form method="post" action="{% url 'logout' %}" class="sidebar-logout">
             {% csrf_token %}
@@ -102,17 +92,18 @@
             </div>
           </header>
 
-          <nav class="channel-tabs" aria-label="Channel sections">
-            {% if active_club %}
-              {# Club hubs switch between chat and events while staying in the same club space. #}
-              <a class="{% if active_tab == 'messages' %}is-active{% endif %}" href="{% url 'club_hub' active_club.slug %}">Messages</a>
-              <a class="{% if active_tab == 'events' %}is-active{% endif %}" href="{% url 'club_hub' active_club.slug %}?tab=events">Events</a>
-            {% else %}
-              <a class="is-active" href="{% url 'home' %}">Messages</a>
-              <a href="{% url 'calendar' %}">Events</a>
-            {% endif %}
-            <a href="#">Files</a>
-          </nav>
+          {% block channel_tabs %}
+            <nav class="channel-tabs" aria-label="Channel sections">
+              {% if active_club %}
+                {# Club hubs switch between chat and events while staying in the same club space. #}
+                <a class="{% if active_tab == 'messages' %}is-active{% endif %}" href="{% url 'club_hub' active_club.slug %}">Messages</a>
+                <a class="{% if active_tab == 'events' %}is-active{% endif %}" href="{% url 'club_hub' active_club.slug %}?tab=events">Events</a>
+              {% else %}
+                <a class="{% if match_tab != 'all_clubs' %}is-active{% endif %}" href="{% url 'club_match' %}">Explore</a>
+                <a class="{% if match_tab == 'all_clubs' %}is-active{% endif %}" href="{% url 'club_match' %}?tab=all_clubs">All Clubs</a>
+              {% endif %}
+            </nav>
+          {% endblock %}
 
           <section class="conversation-scroll">
             {% block content %}{% endblock %}
@@ -120,20 +111,10 @@
 
           {% block composer %}
           <form class="composer" aria-label="Message composer">
-            <div class="composer-toolbar" aria-hidden="true">
-              <span>B</span>
-              <span>I</span>
-              <span>U</span>
-              <span>@</span>
-            </div>
+
             <label class="sr-only" for="message-input">Message</label>
             <textarea id="message-input" rows="2" placeholder="{% block composer_placeholder %}Message this channel{% endblock %}"></textarea>
             <div class="composer-actions">
-              <div>
-                <button type="button">+</button>
-                <button type="button">Aa</button>
-                <button type="button">@</button>
-              </div>
               <button type="button" class="send-button">Send</button>
             </div>
           </form>
