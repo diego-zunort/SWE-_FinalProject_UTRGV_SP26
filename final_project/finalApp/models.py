@@ -114,3 +114,4 @@ class ChatMessage(models.Model):
 def create_profile(sender, instance, created, **kwargs):
 	if created:
 		Profile.objects.get_or_create(user=instance, defaults= {"student_id": 0})
+
