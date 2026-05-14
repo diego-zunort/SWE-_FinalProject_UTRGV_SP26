@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 from django.utils.text import slugify
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -83,6 +85,8 @@ class Club(models.Model):
 class ClubMembership(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="memberships")
+	# Club admins are allowed to create events from their club hub.
+	is_admin = models.BooleanField(default=False)
 	joined_at = models.DateTimeField(auto_now_add=True)
 
 	class Meta:
@@ -92,16 +96,44 @@ class ClubMembership(models.Model):
 		return f"{self.user.username} in {self.club.name}"
   
 class Event(models.Model):
+	"""Scheduled club activity shown on the club Events tab."""
 
-	eventName = models.CharField(max_length=100)
-	desc = models.TextField()
-	time = models.CharField(max_length=100)
-	location = models.CharField(max_length=100)
-	hostClub = models.CharField(max_length=100)
-	requirements = models.CharField(max_length=100)
+	# The FK keeps events scoped to one Discord-style club space.
+	club = models.ForeignKey(
+		Club,
+		on_delete=models.CASCADE,
+		related_name="events",
+		null=True,
+		blank=True,
+	)
+	title = models.CharField(max_length=120, default="")
+	description = models.TextField(blank=True, default="")
+	start_time = models.DateTimeField(default=timezone.now)
+	end_time = models.DateTimeField(null=True, blank=True)
+	location = models.CharField(max_length=120, blank=True, default="")
+	requirements = models.CharField(max_length=255, blank=True, default="")
+	created_by = models.ForeignKey(
+		User,
+		on_delete=models.SET_NULL,
+		related_name="created_events",
+		null=True,
+		blank=True,
+	)
+	created_at = models.DateTimeField(default=timezone.now, editable=False)
+	updated_at = models.DateTimeField(auto_now=True)
+
+	class Meta:
+		ordering = ("start_time",)
+
+	def clean(self):
+		# Only validate the range when the optional end time is present.
+		if self.end_time and self.end_time <= self.start_time:
+			raise ValidationError("Event end time must be after the start time.")
 
 	def __str__(self):
-		return self.name
+		if self.club:
+			return f"{self.title} - {self.club.name}"
+		return self.title
 	
 class ChatMessage(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name="messages")
@@ -114,4 +146,3 @@ class ChatMessage(models.Model):
 def create_profile(sender, instance, created, **kwargs):
 	if created:
 		Profile.objects.get_or_create(user=instance, defaults= {"student_id": 0})
-
