@@ -1787,3 +1787,91 @@ a {
     width: 100%;
   }
 }
+
+/* Form inputs */
+.profile-panel select,
+.profile-panel textarea,
+.profile-panel input[type="number"],
+.profile-panel input[type="text"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    color: var(--text);
+    background: var(--ink-700);
+    font-size: 14px;
+}
+
+.profile-panel select:focus,
+.profile-panel textarea:focus,
+.profile-panel input:focus {
+    outline: 2px solid rgba(46, 211, 183, 0.35);
+    outline-offset: 0;
+    border-color: var(--teal-400);
+}
+
+/* Checkboxes */
+.profile-panel input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--teal-400);
+    cursor: pointer;
+}
+
+/* Checkbox list layout */
+.profile-panel ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+
+.profile-panel ul li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-soft);
+    font-size: 14px;
+}
+
+/* Textarea */
+.profile-panel textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Select dropdown arrow color fix */
+.profile-panel select option {
+    background: var(--ink-800);
+    color: var(--text);
+}
+
+#id_interests {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 6px;
+}
+
+#id_interests div {
+    display: flex;
+    align-items: center;
+}
+
+#id_interests label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-soft);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#id_interests input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--teal-400);
+    cursor: pointer;
+}

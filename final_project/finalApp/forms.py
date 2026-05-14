@@ -34,20 +34,20 @@ class ProfileForm(forms.ModelForm):
         ('Environment','Environment'),
         ('Science','Science')
     ]
+
+    Enrolled_Choices =[(True,'Enrolled'),(False,'Not Enrolled')]
+    enrolled = forms.ChoiceField(choices=Enrolled_Choices)
     major = forms.ChoiceField(choices=Major_Choices)
     interests = forms.MultipleChoiceField(choices=Interest_Choices,
                                           widget=forms.CheckboxSelectMultiple)
     
-    #caps users at 2
     def clean_interests(self):
         interests = self.cleaned_data.get('interests')
-        if len(interests) > 2:
-            raise forms.ValidationError('Please select a maximum of 2 interests.')
         return interests
 
     class Meta:
         model = Profile
-        fields = ['bio','major','interests','student_id']
+        fields = ['bio','major','interests','student_id','enrolled']
 
 class ClubForm(forms.ModelForm):
     class Meta:

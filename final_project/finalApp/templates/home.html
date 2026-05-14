@@ -2,9 +2,8 @@
 
 {% block title %}Venture | General{% endblock %}
 {% block nav_home_class %}is-active{% endblock %}
-{% block channel_name %}general{% endblock %}
+{% block channel_name %}General{% endblock %}
 {% block channel_subtitle %}Announcements, campus activity, and club updates{% endblock %}
-
 {% block content %}
   <div class="date-divider"><span>Today</span></div>
 
@@ -28,10 +27,10 @@
   </article>
 
   <article class="message">
-    <div class="message-avatar">RA</div>
+    <div class="message-avatar is-bot">V</div>
     <div class="message-body">
       <div class="message-meta">
-        <strong>Rafael Anulao</strong>
+        <strong>Venture Bot</strong>
         <time>9:18 AM</time>
       </div>
       <p>
@@ -39,30 +38,40 @@
         save, and join clubs without leaving the conversation layout.
       </p>
       <div class="message-grid">
+        {% if next_match %}
+        <a href="{% url 'club_match'%}" class="panel">
+          <p class="panel-kicker">Best Match</p>
+          <h2>{{next_match.name}}</h2>
+          <p>{{next_match.desc |truncatewords:20 }}</p>
+        </a>
+        {% endif %}
+        {% if recent_club %}
+        <a href="{%url 'club_hub' recent_club.slug %}" class="panel">
+          <p class="panel-kicker">Recent Activity</p>
+          <h2>{{recent_club.name}}</h2>
+          <p>{{recent_club.desc|truncatewords:15}}</p>
+        </a>
+        {% endif %}
         <section class="panel">
-          <p class="panel-kicker">Next Match</p>
-          <h2>Robotics Lab</h2>
-          <p>Hands-on hardware builds, weekly demos, and competition prep.</p>
-        </section>
-        <section class="panel">
-          <p class="panel-kicker">Upcoming</p>
-          <h2>Student Org Fair</h2>
-          <p>Tuesday at 3:00 PM in the student union courtyard.</p>
-        </section>
-        <section class="panel">
-          <p class="panel-kicker">Activity</p>
-          <h2>Frontera Devs</h2>
-          <p>New portfolio review thread opened for student project feedback.</p>
+          <p class="panel-kicker">Clubs</p>
+          <h2> {{club_spaces|length}} Club Joined</h2>
+          <p>
+            {% if club_spaces %}
+              You are a member of {{club_spaces|length}} club {{club_spaces|length|pluralize}}
+            {% else %}
+              You haven't joined any clubs yet. Head to the Club Match to get started!
+            {% endif %}
+          </p>
         </section>
       </div>
     </div>
   </article>
 
   <article class="message">
-    <div class="message-avatar">DZ</div>
+    <div class="message-avatar is-bot">V</div>
     <div class="message-body">
       <div class="message-meta">
-        <strong>Diego Zuniga</strong>
+        <strong>Venture Bot</strong>
         <time>10:04 AM</time>
       </div>
       <p>Joined clubs will appear in the left sidebar so students can move between spaces like channels.</p>
@@ -78,6 +87,135 @@
           {% endfor %}
         </div>
       </div>
-    </div>
+    
   </article>
+
+  <div id="chat-messages">
+  {% for message in general_messages %}
+    <article class="message">
+      <div class="message-avatar">{{ message.author.username|slice:":2"|upper }}</div>
+      <div class="message-body">
+        <div class="message-meta">
+          <strong>{{ message.author.username }}</strong>
+          <time>{{ message.timestamp|date:"g:i A" }}</time>
+        </div>
+        <p>{{ message.message }}</p>
+      </div>
+    </article>
+  {% empty %}
+    <article class="message" id="empty-chat-message">
+      <div class="message-avatar is-bot">V</div>
+      <div class="message-body">
+        <p>No messages yet. Start the conversation.</p>
+      </div>
+    </article>
+  {% endfor %}
+</div>
+
 {% endblock %}
+
+
+<!-- The following block is for the message composer form, which is included in the base template -->
+{% block composer %}
+  <form class="composer chat-composer" id="chat-form" aria-label="Message composer">
+    <div class="composer-toolbar" aria-hidden="true">
+      <span>B</span>
+      <span>I</span>
+      <span>U</span>
+      <span>@</span>
+    </div>
+
+    <label class="sr-only" for="message-input">Message</label>
+    <textarea id="message-input" rows="2" placeholder="Message {{ active_club.channel }}"></textarea>
+
+    <div class="composer-actions">
+      <div>
+        <button type="button">+</button>
+        <button type="button">Aa</button>
+        <button type="button">@</button>
+      </div>
+      <button type="submit" class="send-button" disabled>Send</button>
+    </div>
+  </form>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const scheme = window.location.protocol === "https:" ? "wss" : "ws";
+  const chatSocket = new WebSocket(
+    `${scheme}://${window.location.host}/ws/general/chat/`
+  );
+
+  const chatForm = document.querySelector("#chat-form");
+  const messageInput = document.querySelector("#message-input");
+  const messagesList = document.querySelector("#chat-messages");
+  const sendButton = chatForm.querySelector(".send-button");
+  const conversationScroll = document.querySelector(".conversation-scroll");
+
+  function addMessage(author, message, timestamp) {
+    const emptyMessage = document.querySelector("#empty-chat-message");
+    if (emptyMessage) {
+      emptyMessage.remove();
+    }
+
+    const article = document.createElement("article");
+    article.className = "message";
+
+    const avatar = document.createElement("div");
+    avatar.className = "message-avatar";
+    avatar.textContent = author.slice(0, 2).toUpperCase();
+
+    const body = document.createElement("div");
+    body.className = "message-body";
+
+    const meta = document.createElement("div");
+    meta.className = "message-meta";
+
+    const strong = document.createElement("strong");
+    strong.textContent = author;
+
+    const time = document.createElement("time");
+    time.textContent = timestamp;
+
+    const text = document.createElement("p");
+    text.textContent = message;
+
+    meta.append(strong, time);
+    body.append(meta, text);
+    article.append(avatar, body);
+    messagesList.append(article);
+
+    conversationScroll.scrollTop = conversationScroll.scrollHeight;
+  }
+
+  chatSocket.onopen = function() {
+    sendButton.disabled = false;
+  };
+
+  chatSocket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    addMessage(data.author, data.message, data.timestamp);
+  };
+
+  chatSocket.onclose = function() {
+    sendButton.disabled = true;
+  };
+
+  chatForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const message = messageInput.value.trim();
+    if (!message || chatSocket.readyState !== WebSocket.OPEN) return;
+
+    chatSocket.send(JSON.stringify({ message }));
+    messageInput.value = "";
+  });
+
+  messageInput.addEventListener("keydown", function(event) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      chatForm.requestSubmit();
+    }
+  });
+</script>
+{%endblock%}
